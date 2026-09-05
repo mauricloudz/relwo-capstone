@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;}
+@keyframes relwo-spin{to{transform:rotate(360deg);}}
+a{color:#243B6B;}
+a:hover{color:#7C6EE6;}
+</style>
+</helmet>
+
+<div style="display:flex;min-height:100vh;background:{{t.bg}};font-family:'DM Sans',sans-serif;color:{{t.text}};">
+
+<div style="width:{{sidebarWidth}};flex-shrink:0;background:{{t.surface}};border-right:1px solid {{t.border}};overflow-y:auto;height:100vh;position:sticky;top:0;transition:width 0.15s;">
+  <sc-if value="{{mapOpen}}" hint-placeholder-val="{{true}}">
+  <div style="padding:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:{{t.text}};">Mapa de pantallas</div>
+      <button onClick="{{toggleMap}}" style="border:1px solid {{t.border}};background:{{t.surface}};color:{{t.textSecondary}};border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:13px;">‹</button>
+    </div>
+    <sc-for list="{{screenMap}}" as="grp" hint-placeholder-count="8">
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:{{t.textSecondary}};margin-bottom:6px;">{{grp.group}}</div>
+        <sc-for list="{{grp.items}}" as="item" hint-placeholder-count="4">
+          <button onClick="{{item.go}}" style="display:block;width:100%;text-align:left;padding:7px 10px;margin-bottom:2px;border-radius:8px;border:none;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;background:{{item.bg}};color:{{item.color}};font-weight:{{item.weight}};">{{item.id}} · {{item.label}}</button>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+  </sc-if>
+  <sc-if value="{{mapOpenFalse}}" hint-placeholder-val="{{false}}">
+    <div style="padding:16px 10px;">
+      <button onClick="{{toggleMap}}" style="border:1px solid {{t.border}};background:{{t.surface}};color:{{t.textSecondary}};border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:13px;">›</button>
+    </div>
+  </sc-if>
+</div>
+
+<div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:{{t.surface}};border-bottom:1px solid {{t.border}};">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img src="assets/logo_relwo.jpeg" style="width:40px;height:40px;border-radius:10px;object-fit:cover;">
+      <div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.text}};">RELWO</div>
+        <div style="font-size:11px;color:{{t.textSecondary}};">Prototipo navegable de alta fidelidad</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="display:flex;background:{{t.bg}};border-radius:10px;padding:3px;border:1px solid {{t.border}};">
+        <button onClick="{{setRoleCliente}}" style="border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:{{roleClienteBg}};color:{{roleClienteColor}};">Cliente</button>
+        <button onClick="{{setRolePrestador}}" style="border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:{{rolePrestadorBg}};color:{{rolePrestadorColor}};">Prestador</button>
+      </div>
+      <button onClick="{{toggleTheme}}" style="border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">{{themeIcon}} {{themeLabel}}</button>
+      <button onClick="{{toggleOffline}}" style="border:1px solid {{offlineBorder}};background:{{offlineBg}};color:{{offlineColor}};border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">{{offlineLabel}}</button>
+      <button onClick="{{nav.A01}}" style="border:1px solid {{t.border}};background:{{t.surface}};color:{{t.textSecondary}};border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Reiniciar</button>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;justify-content:center;padding:36px 20px;overflow-y:auto;">
+    <div style="width:390px;height:844px;flex-shrink:0;border-radius:44px;border:9px solid #0B111C;background:#0B111C;box-shadow:0 24px 60px rgba(16,20,30,0.28);overflow:hidden;position:relative;">
+      <div style="height:100%;width:100%;background:{{t.bg}};display:flex;flex-direction:column;position:relative;">
+
+        <div style="flex-shrink:0;height:44px;background:#0B111C;color:#FFFFFF;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600;">
+          <span>9:41</span>
+          <span>RELWO</span>
+          <span>100%</span>
+        </div>
+
+        <sc-if value="{{offlineDemo}}" hint-placeholder-val="{{false}}">
+          <div style="flex-shrink:0;background:{{t.warning}};color:#FFFFFF;font-size:12px;font-weight:700;text-align:center;padding:7px;">⚠ Sin conexión — mostrando la última información guardada</div>
+        </sc-if>
+
+        <div style="flex:1;overflow-y:auto;position:relative;">
+
+<!-- A01 Bienvenida -->
+<sc-if value="{{is.A01}}" hint-placeholder-val="{{true}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:32px 24px 24px;box-sizing:border-box;background:{{t.blueNight}};">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+      <img src="assets/logo_relwo.jpeg" style="width:120px;height:120px;border-radius:28px;object-fit:cover;margin-bottom:24px;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:26px;color:#FFFFFF;margin-bottom:10px;">Trabajo confiable para tu hogar</div>
+      <div style="font-size:14px;color:#C9D0E4;line-height:1.5;max-width:280px;">Solicita limpieza, gasfitería y cerrajería con prestadores verificados y pago protegido hasta que el servicio termina bien.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onClick="{{nav.A02}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Iniciar sesión</button>
+      <button onClick="{{nav.A04}}" style="border:1.5px solid #4A5A85;border-radius:12px;padding:16px;background:transparent;color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Crear cuenta</button>
+      <div style="text-align:center;font-size:12px;color:#8D97B8;margin-top:6px;">Al continuar aceptas los <a href="#" style="color:#A99EF5;">Términos</a>, la <a href="#" style="color:#A99EF5;">Privacidad</a> y puedes ver <a href="#" style="color:#A99EF5;">Ayuda</a>.</div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- A02 Login -->
+<sc-if value="{{is.A02}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;">Inicia sesión</div>
+    </div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label style="font-size:13px;font-weight:600;color:{{t.textSecondary}};">Correo o teléfono</label>
+        <input type="text" placeholder="tu@correo.cl o +56 9…" style="width:100%;box-sizing:border-box;margin-top:6px;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;font-family:'DM Sans',sans-serif;">
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;color:{{t.textSecondary}};">Contraseña</label>
+        <div style="position:relative;margin-top:6px;">
+          <input type="{{passwordType}}" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:13px 44px 13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;font-family:'DM Sans',sans-serif;">
+          <button onClick="{{togglePassword}}" style="position:absolute;right:8px;top:8px;bottom:8px;border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;font-weight:600;cursor:pointer;">{{passwordToggleLabel}}</button>
+        </div>
+      </div>
+      <button onClick="{{nav.A03}}" style="align-self:flex-end;border:none;background:transparent;color:{{t.lavender}};font-size:13px;font-weight:600;cursor:pointer;padding:0;">¿Olvidaste tu contraseña?</button>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.HOME}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Iniciar sesión</button>
+    <div style="text-align:center;font-size:13px;color:{{t.textSecondary}};margin-top:14px;">¿No tienes cuenta? <a href="#" onClick="{{navA04Click}}" style="color:{{t.lavender}};font-weight:600;">Crear cuenta</a></div>
+  </div>
+</sc-if>
+
+<!-- A03 Recuperar contraseña -->
+<sc-if value="{{is.A03}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A02}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;">Recuperar contraseña</div>
+    </div>
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:16px;">
+      <div style="background:{{t.surfaceLavender}};border-radius:16px;padding:16px;">
+        <div style="font-size:13px;font-weight:700;color:{{t.blueDeep}};margin-bottom:8px;">1 · Ingresa tu correo o teléfono</div>
+        <input type="text" placeholder="tu@correo.cl" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;font-family:'DM Sans',sans-serif;">
+      </div>
+      <div style="background:{{t.surfaceLavender}};border-radius:16px;padding:16px;">
+        <div style="font-size:13px;font-weight:700;color:{{t.blueDeep}};margin-bottom:8px;">2 · Código de verificación</div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" maxlength="1" style="width:100%;text-align:center;padding:12px 0;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:18px;font-family:'Outfit',sans-serif;">
+          <input type="text" maxlength="1" style="width:100%;text-align:center;padding:12px 0;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:18px;font-family:'Outfit',sans-serif;">
+          <input type="text" maxlength="1" style="width:100%;text-align:center;padding:12px 0;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:18px;font-family:'Outfit',sans-serif;">
+          <input type="text" maxlength="1" style="width:100%;text-align:center;padding:12px 0;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:18px;font-family:'Outfit',sans-serif;">
+        </div>
+      </div>
+      <div style="background:{{t.surfaceLavender}};border-radius:16px;padding:16px;">
+        <div style="font-size:13px;font-weight:700;color:{{t.blueDeep}};margin-bottom:8px;">3 · Nueva contraseña</div>
+        <input type="password" placeholder="Nueva contraseña" style="width:100%;box-sizing:border-box;margin-bottom:8px;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;font-family:'DM Sans',sans-serif;">
+        <input type="password" placeholder="Confirmar contraseña" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;font-family:'DM Sans',sans-serif;">
+      </div>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.A02}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Confirmar y volver a iniciar sesión</button>
+  </div>
+</sc-if>
+
+<!-- A04 Selección de rol -->
+<sc-if value="{{is.A04}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;">¿Qué quieres hacer en RELWO?</div>
+    </div>
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:14px;">
+      <button onClick="{{nav.A05}}" style="text-align:left;border:1.5px solid {{t.border}};border-radius:16px;padding:20px;background:{{t.surface}};cursor:pointer;font-family:'DM Sans',sans-serif;">
+        <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.text}};margin-bottom:6px;">Necesito contratar un servicio</div>
+        <div style="font-size:13px;color:{{t.textSecondary}};">Limpieza, gasfitería o cerrajería para mi hogar.</div>
+      </button>
+      <button onClick="{{nav.P01}}" style="text-align:left;border:1.5px solid {{t.border}};border-radius:16px;padding:20px;background:{{t.surface}};cursor:pointer;font-family:'DM Sans',sans-serif;">
+        <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.text}};margin-bottom:6px;">Quiero ofrecer mis servicios</div>
+        <div style="font-size:13px;color:{{t.textSecondary}};">Regístrate como prestador verificado y recibe solicitudes.</div>
+      </button>
+    </div>
+    <div style="margin-top:16px;background:{{t.surfaceLavender}};border-radius:12px;padding:14px;font-size:12px;color:{{t.blueDeep}};">Si tu cuenta ya tiene ambos roles, puedes cambiar de modo desde tu perfil sin crear una cuenta nueva.</div>
+  </div>
+</sc-if>
+
+<!-- A05 Registro cliente -->
+<sc-if value="{{is.A05}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A04}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;">Crea tu cuenta</div>
+    </div>
+    <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;justify-content:center;">
+        <div style="width:72px;height:72px;border-radius:50%;border:1.5px dashed {{t.border}};display:flex;align-items:center;justify-content:center;font-size:11px;color:{{t.textSecondary}};text-align:center;">Foto<br>opcional</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <input type="text" placeholder="Nombre" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+        <input type="text" placeholder="Apellidos" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      </div>
+      <input type="text" placeholder="Correo electrónico" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <input type="text" placeholder="Teléfono (+56 9 …)" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <input type="password" placeholder="Contraseña" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <input type="password" placeholder="Confirmar contraseña" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:{{t.textSecondary}};"><input type="checkbox" style="margin-top:2px;">Acepto los Términos y Condiciones y doy mi consentimiento para el tratamiento de mis datos.</label>
+      <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12px;color:{{t.blueDeep}};">Te enviaremos un código para verificar tu correo o teléfono antes de continuar.</div>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.A06}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Verificar identidad</button>
+  </div>
+</sc-if>
+
+<!-- A06 Verificar identidad -->
+<sc-if value="{{is.A06}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A05}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Verifica tu identidad</div>
+    </div>
+    <div style="font-size:13px;color:{{t.textSecondary}};margin:8px 0 16px;line-height:1.5;">Necesitamos validar tu identidad para proteger a clientes y prestadores dentro de RELWO.</div>
+    <sc-if value="{{scanIdle}}" hint-placeholder-val="{{true}}">
+      <div style="border:1.5px dashed {{t.border}};border-radius:16px;padding:28px 20px;text-align:center;background:{{t.surface}};">
+        <div style="font-size:32px;margin-bottom:10px;">🪪</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Escanea tu cédula de identidad</div>
+        <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:16px;">Podrás utilizar la cámara para capturar el documento.</div>
+        <button onClick="{{startScan}}" style="border:none;border-radius:12px;padding:14px 22px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Escanear cédula</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{scanCapturing}}" hint-placeholder-val="{{false}}">
+      <div style="border:1.5px solid {{t.blueDeep}};border-radius:16px;padding:28px 20px;text-align:center;background:{{t.surfaceLavender}};">
+        <div style="width:44px;height:44px;border-radius:50%;border:4px solid {{t.surface}};border-top-color:{{t.blueDeep}};animation:relwo-spin 0.9s linear infinite;margin:0 auto 14px;"></div>
+        <div style="font-weight:700;font-size:14px;color:{{t.blueDeep}};">Capturando documento…</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{scanProcessing}}" hint-placeholder-val="{{false}}">
+      <div style="border:1.5px solid {{t.border}};border-radius:16px;padding:28px 20px;text-align:center;background:{{t.surface}};">
+        <div style="width:44px;height:44px;border-radius:50%;border:4px solid {{t.surfaceLavender}};border-top-color:{{t.blueDeep}};animation:relwo-spin 0.9s linear infinite;margin:0 auto 14px;"></div>
+        <div style="font-weight:700;font-size:14px;">Procesando verificación…</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{scanIllegible}}" hint-placeholder-val="{{false}}">
+      <div style="border:1.5px solid {{t.warning}};border-radius:16px;padding:24px 20px;text-align:center;background:#FCEFDD;">
+        <div style="font-size:28px;margin-bottom:8px;">⚠</div>
+        <div style="font-weight:700;font-size:14px;color:{{t.warning}};margin-bottom:6px;">Documento ilegible</div>
+        <div style="font-size:12.5px;color:{{t.warning}};margin-bottom:14px;">No pudimos leer tu cédula. Intenta con mejor iluminación.</div>
+        <button onClick="{{startScan}}" style="border:none;border-radius:12px;padding:12px 20px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Reintentar captura</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{scanRejected}}" hint-placeholder-val="{{false}}">
+      <div style="border:1.5px solid {{t.error}};border-radius:16px;padding:24px 20px;text-align:center;background:#FDE8E3;">
+        <div style="font-size:28px;margin-bottom:8px;">✕</div>
+        <div style="font-weight:700;font-size:14px;color:{{t.error}};margin-bottom:6px;">Documento rechazado</div>
+        <div style="font-size:12.5px;color:{{t.error}};margin-bottom:14px;">El documento no pudo validarse. Escanea nuevamente tu cédula.</div>
+        <button onClick="{{startScan}}" style="border:none;border-radius:12px;padding:12px 20px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Reintentar captura</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{scanVerified}}" hint-placeholder-val="{{false}}">
+      <div style="border:1.5px solid {{t.success}};border-radius:16px;padding:24px 20px;text-align:center;background:#E6F4F0;">
+        <div style="font-size:28px;margin-bottom:8px;">✓</div>
+        <div style="font-weight:700;font-size:14px;color:{{t.success}};">Identidad verificada</div>
+      </div>
+    </sc-if>
+    <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:11.5px;color:{{t.blueDeep}};margin-top:16px;">Tus datos serán procesados de forma segura exclusivamente para verificar tu identidad.</div>
+    <sc-if value="{{scanIdle}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;gap:14px;justify-content:center;margin-top:10px;">
+        <button onClick="{{simIllegible}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">Simular ilegible</button>
+        <button onClick="{{simRejected}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">Simular rechazo</button>
+      </div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <sc-if value="{{scanVerified}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{nav.CVER}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar</button>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- CVER Verificacion cliente -->
+<sc-if value="{{is.CVER}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A06}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Verificación de identidad</div>
+    </div>
+    <sc-if value="{{cverVerified}}" hint-placeholder-val="{{true}}">
+      <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;font-size:14px;">Identidad</div><div style="font-size:11.5px;color:{{t.textSecondary}};">Cédula validada</div></div>
+        <span style="font-size:11.5px;font-weight:700;color:{{t.success}};background:#E6F4F0;border-radius:20px;padding:5px 10px;">✓ Verificada</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{cverRejected}}" hint-placeholder-val="{{false}}">
+      <div style="border:1.5px solid {{t.error}};border-radius:14px;padding:14px;margin-top:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div><div style="font-weight:700;font-size:14px;">Identidad</div><div style="font-size:11.5px;color:{{t.textSecondary}};">Documento rechazado</div></div>
+          <span style="font-size:11.5px;font-weight:700;color:{{t.error}};background:#FDE8E3;border-radius:20px;padding:5px 10px;">✕ Rechazado</span>
+        </div>
+        <div style="font-size:12px;color:{{t.error}};margin-bottom:8px;">La imagen está borrosa. Escanea nuevamente una imagen legible de tu cédula.</div>
+        <button onClick="{{nav.A06}}" style="width:100%;border:none;border-radius:10px;padding:10px;background:{{t.error}};color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;">Escanear nuevamente</button>
+      </div>
+    </sc-if>
+    <button onClick="{{toggleCver}}" style="margin-top:14px;border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">Simular otro estado</button>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.HOME}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Ir al inicio</button>
+  </div>
+</sc-if>
+
+<!-- HOME -->
+<sc-if value="{{is.HOME}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+        <div>
+          <div style="font-size:12px;color:{{t.textSecondary}};">📍 {{comuna}} · <a href="#" onClick="{{nav.C04}}" style="color:{{t.lavender}};font-weight:600;">cambiar</a></div>
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:22px;color:{{t.text}};margin-top:4px;">¿Qué tipo de servicio necesitas?</div>
+        </div>
+        <button onClick="{{nav.C16}}" style="width:38px;height:38px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;flex-shrink:0;">🔔</button>
+      </div>
+
+      <sc-if value="{{interestNote}}" hint-placeholder-val="{{false}}">
+        <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px 14px;font-size:12px;color:{{t.blueDeep}};margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+          <span>Anotamos tu interés en {{interestNote}}. Te avisaremos cuando esté disponible.</span>
+          <button onClick="{{dismissInterest}}" style="border:none;background:transparent;color:{{t.blueDeep}};font-weight:700;cursor:pointer;">✕</button>
+        </div>
+      </sc-if>
+
+      <button onClick="{{nav.E01}}" style="width:100%;border:none;border-radius:14px;padding:14px 16px;background:{{t.error}};color:#FFFFFF;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <span>⚠ Servicio de emergencia</span><span>→</span>
+      </button>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button onClick="{{chooseLimpieza}}" style="text-align:left;border:1px solid {{t.border}};border-radius:16px;padding:18px;background:{{t.surface}};cursor:pointer;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.text}};">Limpieza del hogar</div>
+          <div style="font-size:12.5px;color:{{t.textSecondary}};margin:6px 0 0;">Aseo profesional para tu casa o departamento.</div>
+        </button>
+        <button onClick="{{chooseGasfiteria}}" style="text-align:left;border:1px solid {{t.border}};border-radius:16px;padding:18px;background:{{t.surface}};cursor:pointer;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.text}};">Gasfitería</div>
+          <div style="font-size:12.5px;color:{{t.textSecondary}};margin:6px 0 10px;">Visita, diagnóstico y cotización aprobada en la app.</div>
+          <div style="display:flex;gap:6px;">
+            <span style="font-size:11px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:20px;padding:4px 10px;">Agendado</span>
+            <span style="font-size:11px;background:#FDE8E3;color:{{t.error}};border-radius:20px;padding:4px 10px;">Urgente si hay disponibilidad</span>
+          </div>
+        </button>
+        <button onClick="{{chooseCerrajeria}}" style="text-align:left;border:1px solid {{t.border}};border-radius:16px;padding:18px;background:{{t.surface}};cursor:pointer;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.text}};">Cerrajería</div>
+          <div style="font-size:12.5px;color:{{t.textSecondary}};margin:6px 0 10px;">Agendado o atención urgente ante un imprevisto.</div>
+          <div style="display:flex;gap:6px;">
+            <span style="font-size:11px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:20px;padding:4px 10px;">Agendado</span>
+            <span style="font-size:11px;background:#FDE8E3;color:{{t.error}};border-radius:20px;padding:4px 10px;">Urgente</span>
+          </div>
+        </button>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;letter-spacing:0.04em;margin:20px 0 10px;">Próximamente</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <sc-for list="{{proximamente}}" as="p" hint-placeholder-count="4">
+          <button onClick="{{p.notify}}" style="text-align:left;border:1px dashed {{t.border}};border-radius:14px;padding:14px;background:{{t.bg}};opacity:0.85;cursor:pointer;">
+            <div style="font-size:13px;font-weight:700;color:{{t.text}};">{{p.name}}</div>
+            <div style="font-size:11px;color:{{t.textSecondary}};margin-top:4px;">Próximamente</div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{clientTabs}}" as="tab" hint-placeholder-count="4">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 4px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;color:{{tab.color}};font-weight:{{tab.weight}};font-size:11px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<!-- C01 Perfil cliente -->
+<sc-if value="{{is.C01}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;margin-bottom:16px;">Mi perfil</div>
+      <div style="display:flex;align-items:center;gap:14px;background:{{t.surface}};border:1px solid {{t.border}};border-radius:16px;padding:16px;margin-bottom:16px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:{{t.blueDeep}};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;">CV</div>
+        <div>
+          <div style="font-weight:700;font-size:15px;">Camila Vergara</div>
+          <div style="font-size:12px;color:{{t.textSecondary}};">camila.vergara@correo.cl · +56 9 8123 4567</div>
+        </div>
+      </div>
+      <sc-for list="{{profileRows}}" as="row" hint-placeholder-count="9">
+        <button onClick="{{row.go}}" style="width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;border:none;border-bottom:1px solid {{t.border}};background:transparent;padding:14px 4px;cursor:pointer;color:{{t.text}};font-family:'DM Sans',sans-serif;">
+          <span style="font-size:14px;">{{row.label}}</span>
+          <span style="font-size:12px;color:{{t.textSecondary}};">{{row.value}} ›</span>
+        </button>
+      </sc-for>
+      <button onClick="{{nav.A01}}" style="width:100%;margin-top:18px;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Cerrar sesión</button>
+      <button style="width:100%;margin-top:10px;border:none;background:transparent;color:{{t.error}};font-size:12px;font-weight:600;cursor:pointer;padding:8px;">Solicitar eliminación de cuenta</button>
+    </div>
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{clientTabs}}" as="tab" hint-placeholder-count="4">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 4px 12px;cursor:pointer;color:{{tab.color}};font-weight:{{tab.weight}};font-size:11px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<!-- C02 Teléfono de referencia -->
+<sc-if value="{{is.C02}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Teléfono de referencia</div>
+    </div>
+    <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12px;color:{{t.blueDeep}};margin:12px 0;">Decisión abierta — presentamos dos variantes para revisión interna.</div>
+    <div style="display:flex;background:{{t.bg}};border:1px solid {{t.border}};border-radius:10px;padding:3px;margin-bottom:16px;">
+      <button onClick="{{setTelA}}" style="flex:1;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;background:{{telABg}};color:{{telAColor}};">Variante A</button>
+      <button onClick="{{setTelB}}" style="flex:1;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;background:{{telBBg}};color:{{telBColor}};">Variante B</button>
+    </div>
+    <sc-if value="{{isTelA}}" hint-placeholder-val="{{true}}">
+      <div style="font-size:13px;font-weight:700;color:{{t.textSecondary}};margin-bottom:8px;">Teléfono principal de la cuenta</div>
+      <input type="text" value="+56 9 8123 4567" disabled style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <div style="font-size:12px;color:{{t.textSecondary}};margin-top:10px;">Solo se usa el teléfono principal de la cuenta como dato de contacto para el servicio.</div>
+    </sc-if>
+    <sc-if value="{{isTelB}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:13px;font-weight:700;color:{{t.textSecondary}};margin-bottom:8px;">Teléfono principal de la cuenta</div>
+      <input type="text" value="+56 9 8123 4567" disabled style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:{{t.textSecondary}};margin-bottom:8px;">Teléfono de referencia del domicilio (opcional)</div>
+      <input type="text" placeholder="Nombre de contacto" style="width:100%;box-sizing:border-box;margin-bottom:8px;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <input type="text" placeholder="+56 9 …" style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <div style="font-size:12px;color:{{t.textSecondary}};margin-top:10px;">No obligatorio hasta que esta variante sea aprobada.</div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.C01}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Guardar</button>
+  </div>
+</sc-if>
+
+<!-- C03 Perfil del hogar -->
+<sc-if value="{{is.C03}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Perfil del hogar</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Tipo de vivienda</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <span style="flex:1;text-align:center;border-radius:10px;padding:10px;border:1.5px solid {{t.blueDeep}};background:{{t.surfaceLavender}};color:{{t.blueDeep}};font-size:13px;font-weight:700;">Depto</span>
+          <span style="flex:1;text-align:center;border-radius:10px;padding:10px;border:1px solid {{t.border}};color:{{t.textSecondary}};font-size:13px;">Casa</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;"><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Dormitorios</label><input type="number" value="2" style="width:100%;box-sizing:border-box;margin-top:6px;padding:11px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};"></div>
+        <div style="flex:1;"><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Baños</label><input type="number" value="1" style="width:100%;box-sizing:border-box;margin-top:6px;padding:11px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};"></div>
+        <div style="flex:1;"><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Pisos</label><input type="number" value="1" style="width:100%;box-sizing:border-box;margin-top:6px;padding:11px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};"></div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Mascotas</label>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+          <sc-for list="{{mascotas}}" as="m" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;gap:8px;align-items:center;">
+                <select onChange="{{m.setType}}" value="{{m.type}}" style="flex:1;padding:10px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:13px;">
+                  <option value="Perro">Perro</option>
+                  <option value="Gato">Gato</option>
+                  <option value="Aves">Aves</option>
+                  <option value="Otros">Otros</option>
+                </select>
+                <select onChange="{{m.setQty}}" value="{{m.qty}}" style="width:70px;padding:10px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:13px;">
+                  <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                </select>
+                <button onClick="{{m.remove}}" style="width:36px;height:36px;flex-shrink:0;border:1px solid {{t.border}};border-radius:10px;background:{{t.surface}};color:{{t.error}};cursor:pointer;">✕</button>
+              </div>
+              <sc-if value="{{m.isOther}}" hint-placeholder-val="{{false}}">
+                <div>
+                  <label style="font-size:11.5px;font-weight:600;color:{{t.textSecondary}};">¿Qué animal es?</label>
+                  <input type="text" placeholder="Ej: conejo, hurón, reptil" value="{{m.otherLabel}}" onChange="{{m.setOther}}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:10px 12px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:13px;">
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <button onClick="{{addMascota}}" style="display:flex;align-items:center;gap:6px;justify-content:center;border:1px dashed {{t.border}};border-radius:10px;padding:10px;background:transparent;color:{{t.blueDeep}};font-weight:600;font-size:13px;cursor:pointer;">+ Agregar mascota</button>
+        </div>
+      </div>
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Notas generales</label><textarea rows="2" placeholder="Ej: departamento con conserjería 24 hrs" style="width:100%;box-sizing:border-box;margin-top:6px;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;"></textarea></div>
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Instrucciones de acceso (privadas)</label><textarea rows="2" placeholder="Ej: clave del edificio, piso, timbre" style="width:100%;box-sizing:border-box;margin-top:6px;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;"></textarea>
+        <div style="font-size:11px;color:{{t.textSecondary}};margin-top:4px;">🔒 Nunca se muestran públicamente; solo al prestador asignado tras aceptar.</div>
+      </div>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.C01}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Guardar domicilio</button>
+  </div>
+</sc-if>
+
+<!-- C04 Dirección y comuna -->
+<sc-if value="{{is.C04}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Dirección y comuna</div>
+    </div>
+    <div style="margin-top:8px;">
+      <label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Comuna</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:14px;">
+        <sc-for list="{{comunas}}" as="c" hint-placeholder-count="5">
+          <button onClick="{{c.pick}}" style="border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid {{c.border}};background:{{c.bg}};color:{{c.color}};">{{c.name}}</button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{locationDenied}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FDE8E3;border-radius:12px;padding:12px;font-size:12px;color:{{t.error}};margin-bottom:12px;">⚠ Permiso de ubicación rechazado. Ingresa tu dirección manualmente.</div>
+      </sc-if>
+      <sc-if value="{{locationNotDenied}}" hint-placeholder-val="{{true}}">
+        <button onClick="{{denyLocation}}" style="width:100%;border:1.5px solid {{t.blueDeep}};border-radius:12px;padding:13px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};font-weight:700;font-size:14px;cursor:pointer;margin-bottom:12px;">📍 Usar mi ubicación</button>
+      </sc-if>
+
+      <label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Dirección</label>
+      <input type="text" placeholder="Calle, número, depto" style="width:100%;box-sizing:border-box;margin-top:6px;margin-bottom:10px;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <div style="border:1px solid {{t.border}};border-radius:10px;overflow:hidden;margin-bottom:14px;">
+        <div style="padding:10px 12px;font-size:12.5px;color:{{t.text}};border-bottom:1px solid {{t.border}};">Av. Irarrázaval 3200, {{comuna}}</div>
+        <div style="padding:10px 12px;font-size:12.5px;color:{{t.text}};">Av. Irarrázaval 3450, {{comuna}}</div>
+      </div>
+
+      <div style="height:150px;border-radius:16px;background:{{t.surfaceLavender}};position:relative;overflow:hidden;margin-bottom:12px;">
+        <div style="position:absolute;inset:0;background-image:linear-gradient({{t.border}} 1px, transparent 1px),linear-gradient(90deg, {{t.border}} 1px, transparent 1px);background-size:24px 24px;opacity:0.6;"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);width:14px;height:14px;border-radius:50% 50% 50% 0;background:{{t.coral}};transform-origin:bottom right;"></div>
+        <div style="position:absolute;bottom:8px;left:8px;font-size:11px;background:{{t.surface}};padding:4px 8px;border-radius:8px;color:{{t.textSecondary}};">Arrastra el marcador para ajustar</div>
+      </div>
+      <button style="width:100%;border:none;background:transparent;color:{{t.lavender}};font-size:12.5px;font-weight:600;cursor:pointer;padding:0 0 10px;text-align:left;">Ingresar dirección manualmente</button>
+
+      <sc-if value="{{comunaCovered}}" hint-placeholder-val="{{true}}">
+        <div style="background:#E6F4F0;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.success}};">✓ {{comuna}} tiene cobertura operativa.</div>
+      </sc-if>
+      <sc-if value="{{comunaNotCovered}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FCEFDD;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.warning}};">⚠ {{comuna}} aún no tiene cobertura operativa. Puedes anotar tu interés.</div>
+      </sc-if>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.C01}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Confirmar ubicación</button>
+  </div>
+</sc-if>
+
+<!-- C05 Cuando -->
+<sc-if value="{{is.C05}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{c05Back}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">¿Cuándo necesitas el servicio?</div>
+    </div>
+    <div style="display:flex;gap:10px;margin:14px 0;">
+      <button onClick="{{setHoy}}" style="flex:1;border-radius:14px;padding:16px;cursor:pointer;border:1.5px solid {{hoyBorder}};background:{{hoyBg}};color:{{hoyColor}};font-weight:700;">Hoy</button>
+      <button onClick="{{setProgramar}}" style="flex:1;border-radius:14px;padding:16px;cursor:pointer;border:1.5px solid {{progBorder}};background:{{progBg}};color:{{progColor}};font-weight:700;">Programar por día</button>
+    </div>
+    <sc-if value="{{isHoy}}" hint-placeholder-val="{{true}}">
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Hora de llegada</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <button onClick="{{hourUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▲</button>
+          <div style="width:52px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:10px;padding:7px 0;">{{hh}}</div>
+          <button onClick="{{hourDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▼</button>
+        </div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;color:{{t.text}};">:</div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <button onClick="{{minUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▲</button>
+          <div style="width:52px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:10px;padding:7px 0;">{{mm}}</div>
+          <button onClick="{{minDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▼</button>
+        </div>
+        <div style="font-size:12px;color:{{t.textSecondary}};margin-left:2px;">hrs.</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Dirección del servicio</div>
+      <div style="display:flex;align-items:center;gap:10px;border:1px solid {{t.border}};border-radius:12px;padding:13px 14px;background:{{t.bg}};margin-bottom:6px;">
+        <span style="font-size:16px;">📍</span>
+        <span style="font-size:13.5px;color:{{t.text}};flex:1;">{{homeAddress}}</span>
+        <span style="font-size:12px;color:{{t.textSecondary}};">🔒</span>
+      </div>
+      <div style="font-size:11px;color:{{t.textSecondary}};margin-bottom:16px;">Esta dirección corresponde al hogar seleccionado.</div>
+      <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12.5px;color:{{t.blueDeep}};">
+        <div style="font-weight:700;margin-bottom:4px;">Servicio: {{serviceLabelC05}}</div>
+        <div>Hoy · {{hh}}:{{mm}} hrs</div>
+        <div style="margin-top:2px;">{{homeAddress}}</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{isProgramar}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Fecha (agosto)</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:4px;background:{{t.surface}};border:1px solid {{t.border}};border-radius:12px;padding:6px;margin-bottom:14px;">
+        <button onClick="{{dayPrev}}" disabled="{{dayPrevDisabled}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:14px;cursor:{{dayPrevCursor}};padding:2px 6px;opacity:{{dayPrevOpacity}};">‹</button>
+        <sc-for list="{{dayWheel}}" as="d" hint-placeholder-count="3">
+          <div style="min-width:60px;text-align:center;padding:4px 2px;font-size:{{d.size}};font-weight:{{d.weight}};color:{{d.color}};">{{d.label}}</div>
+        </sc-for>
+        <button onClick="{{dayNext}}" disabled="{{dayNextDisabled}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:14px;cursor:{{dayNextCursor}};padding:2px 6px;opacity:{{dayNextOpacity}};">›</button>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Hora de llegada</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <button onClick="{{hourUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▲</button>
+          <div style="width:52px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:10px;padding:7px 0;">{{hh}}</div>
+          <button onClick="{{hourDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▼</button>
+        </div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;color:{{t.text}};">:</div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <button onClick="{{minUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▲</button>
+          <div style="width:52px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:10px;padding:7px 0;">{{mm}}</div>
+          <button onClick="{{minDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;padding:2px;">▼</button>
+        </div>
+        <div style="font-size:12px;color:{{t.textSecondary}};margin-left:2px;">hrs.</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Dirección del servicio</div>
+      <div style="display:flex;align-items:center;gap:10px;border:1px solid {{t.border}};border-radius:12px;padding:13px 14px;background:{{t.bg}};margin-bottom:6px;">
+        <span style="font-size:16px;">📍</span>
+        <span style="font-size:13.5px;color:{{t.text}};flex:1;">{{homeAddress}}</span>
+        <span style="font-size:12px;color:{{t.textSecondary}};">🔒</span>
+      </div>
+      <div style="font-size:11px;color:{{t.textSecondary}};margin-bottom:16px;">Esta dirección corresponde al hogar seleccionado.</div>
+      <sc-for list="{{extraDates}}" as="ed" hint-placeholder-count="0">
+        <div style="border:1px solid {{t.border}};border-radius:12px;padding:12px 14px;margin-bottom:8px;">
+          <div style="font-size:13px;font-weight:600;color:{{t.text}};">{{ed.dateLabel}}</div>
+          <div style="font-size:12px;color:{{t.textSecondary}};margin:2px 0 8px;">{{ed.address}}</div>
+          <div style="display:flex;gap:6px;">
+            <button onClick="{{ed.edit}}" style="border:1px solid {{t.border}};border-radius:8px;padding:6px 10px;background:{{t.surface}};color:{{t.text}};font-size:11.5px;cursor:pointer;">Editar</button>
+            <button onClick="{{ed.remove}}" style="border:1px solid {{t.error}};border-radius:8px;padding:6px 10px;background:transparent;color:{{t.error}};font-size:11.5px;cursor:pointer;">Eliminar</button>
+          </div>
+        </div>
+      </sc-for>
+      <button onClick="{{addExtraDate}}" style="display:flex;align-items:center;gap:6px;justify-content:center;width:100%;border:1px dashed {{t.border}};border-radius:12px;padding:12px;background:transparent;color:{{t.blueDeep}};font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:12px;">+ Agendar otro día</button>
+      <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12.5px;color:{{t.blueDeep}};">
+        <div style="font-weight:700;margin-bottom:4px;">Servicio: {{serviceLabelC05}}</div>
+        <div>{{scheduleSub}}</div>
+        <sc-for list="{{scheduleLines}}" as="ln" hint-placeholder-count="0">
+          <div style="margin-top:2px;">· {{ln}}</div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <button onClick="{{goRequestForm}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">{{continueLabel}}</button>
+  </div>
+</sc-if>
+
+<!-- C06G Solicitud Gasfiteria -->
+<sc-if value="{{is.C06G}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.HOME}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">¿Qué pasó en tu casa?</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Tipo de problema</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:700;border:1.5px solid {{t.blueDeep}};background:{{t.surfaceLavender}};color:{{t.blueDeep}};">Filtración</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Grifería</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">WC</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Calefont</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Otro</span>
+        </div>
+      </div>
+      <textarea rows="2" placeholder="Describe brevemente el problema" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;"></textarea>
+      <button onClick="{{photoGasUpload}}" style="border:1.5px dashed {{photoGasBorder}};border-radius:12px;padding:16px;text-align:center;font-size:12.5px;color:{{photoGasColor}};background:transparent;cursor:pointer;">{{photoGasLabel}}</button>
+      <div style="font-size:11px;color:{{t.textSecondary}};">Necesitamos ver el problema para que el oferente pueda evaluar correctamente el trabajo.</div>
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Teléfono de contacto</label><input type="text" value="+56 9 8123 4567" style="width:100%;box-sizing:border-box;margin-top:6px;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};"></div>
+      <div style="font-size:12.5px;color:{{t.textSecondary}};">Comuna: {{comuna}} · Instrucciones de acceso ya guardadas.</div>
+      <sc-if value="{{photoGasMissingWarning}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FCEFDD;border-radius:12px;padding:11px;font-size:12px;color:{{t.warning}};">Debes agregar una fotografía antes de continuar.</div>
+      </sc-if>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{goC05Gas}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar</button>
+  </div>
+</sc-if>
+
+<!-- C06C Solicitud Cerrajeria -->
+<sc-if value="{{is.C06C}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.HOME}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">¿Qué necesitas resolver?</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Tipo de necesidad</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:700;border:1.5px solid {{t.blueDeep}};background:{{t.surfaceLavender}};color:{{t.blueDeep}};">Quedé fuera de casa</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Cambio de cerradura</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Llave quebrada</span>
+        </div>
+      </div>
+      <textarea rows="2" placeholder="Describe brevemente lo que pasó" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;"></textarea>
+      <button onClick="{{photoCerrUpload}}" style="border:1.5px dashed {{photoCerrBorder}};border-radius:12px;padding:16px;text-align:center;font-size:12.5px;color:{{photoCerrColor}};background:transparent;cursor:pointer;">{{photoCerrLabel}}</button>
+      <div style="font-size:11px;color:{{t.textSecondary}};">Necesitamos ver la situación para que el oferente pueda evaluar correctamente el trabajo.</div>
+      <input type="text" placeholder="Teléfono de contacto" value="+56 9 8123 4567" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};">
+      <sc-if value="{{photoCerrMissingWarning}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FCEFDD;border-radius:12px;padding:11px;font-size:12px;color:{{t.warning}};">Debes agregar una fotografía antes de continuar.</div>
+      </sc-if>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{goC05Cerr}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar</button>
+  </div>
+</sc-if>
+
+<!-- E01 Emergencia seleccion -->
+<sc-if value="{{is.E01}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;background:{{t.bg}};">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.HOME}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:{{t.error}};">⚠ Servicio de emergencia</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">¿Qué necesitas?</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onClick="{{setEmerGas}}" style="flex:1;border-radius:12px;padding:14px;cursor:pointer;border:1.5px solid {{emerGasBorder}};background:{{emerGasBg}};color:{{emerGasColor}};font-weight:700;">Gasfitería</button>
+          <button onClick="{{setEmerCerraj}}" style="flex:1;border-radius:12px;padding:14px;cursor:pointer;border:1.5px solid {{emerCerrajBorder}};background:{{emerCerrajBg}};color:{{emerCerrajColor}};font-weight:700;">Cerrajería</button>
+        </div>
+      </div>
+      <div style="font-size:12.5px;color:{{t.text}};">Ubicación: Av. Irarrázaval 3200, {{comuna}} <a href="#" style="color:{{t.lavender}};font-weight:600;">confirmar</a></div>
+      <div style="font-size:12.5px;color:{{t.text}};">Teléfono: +56 9 8123 4567 <a href="#" style="color:{{t.lavender}};font-weight:600;">confirmar</a></div>
+      <textarea rows="2" placeholder="Describe brevemente el problema" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;"></textarea>
+      <div style="border:1.5px dashed {{t.border}};border-radius:12px;padding:14px;text-align:center;font-size:12.5px;color:{{t.textSecondary}};">+ Adjuntar fotografía (opcional)</div>
+      <div style="background:#FCEFDD;border-radius:12px;padding:12px;font-size:12px;color:{{t.warning}};">RELWO coordina servicios para el hogar. Si existe riesgo para personas, incendio, fuga peligrosa o un delito en curso, contacta a los servicios de emergencia correspondientes.</div>
+      <div style="font-size:12.5px;color:{{t.success}};">✓ Disponibilidad estimada: un prestador verificado confirma en menos de 30 min.</div>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.E02}}" style="border:none;border-radius:12px;padding:16px;background:{{t.error}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar</button>
+  </div>
+</sc-if>
+
+<!-- E02 Emergencia confirmacion -->
+<sc-if value="{{is.E02}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.E01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Confirmar atención urgente</div>
+    </div>
+    <div style="background:{{t.surface}};border:1px solid {{t.border}};border-radius:16px;padding:16px;margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Servicio</span><span style="font-weight:700;">{{emergencyLabel}} · Urgente</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Dirección</span><span style="font-weight:700;">Av. Irarrázaval 3200</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Comuna</span><span style="font-weight:700;">{{comuna}}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Prestadores elegibles</span><span style="font-weight:700;">3 disponibles ahora</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Recargo de urgencia</span><span style="font-weight:700;">Calculado por el servidor al confirmar</span></div>
+    </div>
+    <div style="background:#FCEFDD;border-radius:12px;padding:12px;font-size:12px;color:{{t.warning}};margin-top:14px;">Confirma solo si necesitas atención real ahora. Esta pantalla evita activaciones accidentales.</div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.C09}}" style="border:none;border-radius:12px;padding:16px;background:{{t.error}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Solicitar atención urgente</button>
+  </div>
+</sc-if>
+
+<!-- C07 Buscando oferentes -->
+<sc-if value="{{is.C07}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.HOME}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Buscando oferentes cercanos</div>
+    </div>
+    <div style="height:200px;border-radius:16px;background:{{t.surfaceLavender}};position:relative;overflow:hidden;margin:8px 0 14px;">
+      <div style="position:absolute;inset:0;background-image:linear-gradient({{t.border}} 1px, transparent 1px),linear-gradient(90deg, {{t.border}} 1px, transparent 1px);background-size:22px 22px;opacity:0.5;"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:{{t.coral}};box-shadow:0 0 0 6px rgba(240,100,73,0.25);"></div>
+      <div style="position:absolute;top:30%;left:25%;font-size:11px;background:{{t.surface}};padding:3px 7px;border-radius:20px;color:{{t.blueDeep}};">🧑‍🔧 850 m</div>
+      <div style="position:absolute;top:65%;left:68%;font-size:11px;background:{{t.surface}};padding:3px 7px;border-radius:20px;color:{{t.blueDeep}};">🧑‍🔧 1,2 km</div>
+      <div style="position:absolute;top:22%;left:70%;font-size:11px;background:{{t.surface}};padding:3px 7px;border-radius:20px;color:{{t.blueDeep}};">🧑‍🔧 2,4 km</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <div style="width:20px;height:20px;border-radius:50%;border:3px solid {{t.surfaceLavender}};border-top-color:{{t.blueDeep}};animation:relwo-spin 0.9s linear infinite;"></div>
+      <div style="font-weight:700;font-size:14px;">Buscando oferentes cercanos…</div>
+    </div>
+    <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:16px;">Estamos buscando oferentes que puedan atender tu solicitud.</div>
+    <div style="flex:1;"></div>
+    <button onClick="{{goC09}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar</button>
+    <button onClick="{{goC08NoProviders}}" style="margin-top:10px;border:none;background:transparent;color:{{t.textSecondary}};font-size:11.5px;cursor:pointer;">Simular sin disponibilidad</button>
+  </div>
+</sc-if>
+
+<!-- C08 Sin oferentes disponibles -->
+<sc-if value="{{is.C08}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C07}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Sin oferentes disponibles</div>
+    </div>
+    <div style="background:#FCEFDD;border-radius:12px;padding:16px;font-size:13px;color:{{t.warning}};margin-top:10px;">No hay oferentes compatibles con tu comuna, día y hora en este momento. Seguiremos buscando y te avisaremos apenas haya disponibilidad.</div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.C07}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Seguir buscando</button>
+    <button onClick="{{nav.HOME}}" style="margin-top:10px;border:none;background:transparent;color:{{t.textSecondary}};font-size:12px;cursor:pointer;">Volver al inicio</button>
+  </div>
+</sc-if>
+
+<!-- C09 Solicitud enviada -->
+<sc-if value="{{is.C09}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <sc-if value="{{c09Idle}}" hint-placeholder-val="{{true}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div style="width:20px;height:20px;border-radius:50%;border:3px solid {{t.surfaceLavender}};border-top-color:{{t.blueDeep}};animation:relwo-spin 0.9s linear infinite;margin-bottom:12px;"></div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;margin-bottom:8px;">Esperando respuesta</div>
+        <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:6px;max-width:260px;">Enviamos tu solicitud a oferentes cercanos.</div>
+        <div style="font-size:11.5px;color:{{t.textSecondary}};margin-bottom:16px;max-width:260px;">La solicitud quedará confirmada cuando un oferente envíe su propuesta y tú la aceptes.</div>
+        <div style="background:{{t.surface}};border:1px solid {{t.border}};border-radius:14px;padding:14px;width:100%;text-align:left;font-size:12.5px;color:{{t.text}};margin-bottom:16px;">
+          <div>Servicio: {{serviceLabel}}</div><div>Día: {{c09Day}}</div><div>Hora: {{hh}}:{{mm}} hrs</div><div>Comuna: {{comuna}}</div>
+        </div>
+        <button onClick="{{goC10}}" style="border:none;border-radius:12px;padding:14px 24px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Simular propuesta recibida</button>
+        <button onClick="{{openCancelModal}}" style="margin-top:10px;border:none;background:transparent;color:{{t.error}};font-size:12.5px;font-weight:600;cursor:pointer;">Cancelar solicitud</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{c09Cancelled}}" hint-placeholder-val="{{false}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:50%;background:#E6F4F0;color:{{t.success}};display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;">✓</div>
+        <div style="font-weight:700;">Solicitud cancelada correctamente.</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{cancelModalOpen}}" hint-placeholder-val="{{false}}">
+      <div style="position:absolute;inset:0;background:rgba(23,36,66,0.45);display:flex;align-items:flex-end;z-index:50;">
+        <div style="width:100%;background:{{t.surface}};border-radius:20px 20px 0 0;padding:20px;box-sizing:border-box;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:12px;">¿Por qué quieres cancelar la solicitud?</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <sc-for list="{{cancelReasons}}" as="r" hint-placeholder-count="4">
+              <button onClick="{{r.pick}}" style="text-align:left;border-radius:10px;padding:12px;cursor:pointer;border:1.5px solid {{r.border}};background:{{r.bg}};color:{{r.color}};font-size:13.5px;font-weight:600;">{{r.label}}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{cancelReasonOther}}" hint-placeholder-val="{{false}}">
+            <textarea rows="2" placeholder="Escribe brevemente por qué deseas cancelar" value="{{cancelOtherText}}" onChange="{{setCancelOtherText}}" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.bg}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;margin-bottom:12px;"></textarea>
+          </sc-if>
+          <div style="display:flex;gap:8px;">
+            <button onClick="{{closeCancelModal}}" style="flex:1;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Volver</button>
+            <button onClick="{{confirmCancel}}" disabled="{{cancelConfirmDisabled}}" style="flex:1;border:none;border-radius:12px;padding:13px;background:{{t.error}};color:#fff;font-weight:700;cursor:pointer;opacity:{{cancelConfirmOpacity}};">Cancelar solicitud</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- C10 Propuesta recibida -->
+<sc-if value="{{is.C10}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C09}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Propuesta recibida</div>
+    </div>
+    <div style="background:{{t.surface}};border:1px solid {{t.border}};border-radius:16px;padding:18px;margin-top:8px;">
+      <div style="font-size:12px;color:{{t.textSecondary}};margin-bottom:4px;">Valor del trabajo</div>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:30px;color:{{t.text}};">{{quotedPrice}}</div>
+    </div>
+    <div style="font-size:12px;color:{{t.textSecondary}};margin-top:10px;">Este valor fue indicado por el oferente para realizar el trabajo solicitado.</div>
+    <sc-if value="{{acceptedToast}}" hint-placeholder-val="{{false}}">
+      <div style="background:#E6F4F0;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.success}};margin-top:14px;">✓ Oferente seleccionado correctamente.</div>
+    </sc-if>
+    <sc-if value="{{buscarOtroModalOpen}}" hint-placeholder-val="{{false}}">
+      <div style="position:absolute;inset:0;background:rgba(23,36,66,0.45);display:flex;align-items:flex-end;z-index:50;">
+        <div style="width:100%;background:{{t.surface}};border-radius:20px 20px 0 0;padding:20px;box-sizing:border-box;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:8px;">¿Quieres solicitar otra propuesta?</div>
+          <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:16px;">La propuesta actual dejará de estar seleccionada y RELWO continuará buscando otro oferente.</div>
+          <div style="display:flex;gap:8px;">
+            <button onClick="{{closeBuscarOtroModal}}" style="flex:1;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Volver</button>
+            <button onClick="{{confirmBuscarOtro}}" style="flex:1;border:none;border-radius:12px;padding:13px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Buscar otro oferente</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <button onClick="{{acceptOfferer}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Aceptar oferente</button>
+    <button onClick="{{openBuscarOtroModal}}" style="margin-top:8px;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:transparent;color:{{t.text}};font-weight:600;cursor:pointer;">Buscar otro</button>
+  </div>
+</sc-if>
+
+<!-- C10A Metodo de pago -->
+<sc-if value="{{is.C10A}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C10}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Confirmar pago</div>
+    </div>
+    <sc-if value="{{c10aIdle}}" hint-placeholder-val="{{true}}">
+      <div style="background:{{t.surface}};border:1px solid {{t.border}};border-radius:16px;padding:16px;margin-top:8px;display:flex;flex-direction:column;gap:8px;font-size:13px;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Servicio</span><span style="font-weight:700;">{{serviceLabel}}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Día y hora</span><span style="font-weight:700;">{{hh}}:{{mm}} hrs</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Comuna</span><span style="font-weight:700;">{{comuna}}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Oferente</span><span style="font-weight:700;">Propuesta aceptada</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Valor del trabajo</span><span style="font-weight:700;">{{quotedPrice}}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Comisión</span><span style="font-weight:700;color:{{t.success}};">incluida</span></div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid {{t.border}};padding-top:8px;"><span style="color:{{t.textSecondary}};">Total a pagar</span><span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">{{quotedPrice}}</span></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};margin:14px 0 8px;">MÉTODO DE PAGO</div>
+      <div style="border:1.5px solid {{t.blueDeep}};background:{{t.surfaceLavender}};border-radius:12px;padding:13px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:{{t.blueDeep}};font-weight:700;"><span>Transbank</span><span>Seleccionado</span></div>
+      <div style="font-size:11.5px;color:{{t.textSecondary}};margin-top:8px;">Serás redirigido al flujo de pago seguro. El pago se procesa a través de Transbank.</div>
+      <div style="display:flex;align-items:center;gap:8px;background:#E6F4F0;border-radius:12px;padding:12px;margin-top:14px;font-size:12.5px;color:{{t.success}};">🔒 Tu pago quedará protegido dentro de la plataforma.</div>
+      <div style="flex:1;"></div>
+      <button onClick="{{startPayment}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Pagar con Transbank</button>
+      <button onClick="{{nav.C10}}" style="margin-top:8px;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:transparent;color:{{t.text}};font-weight:600;cursor:pointer;">Volver</button>
+      <button onClick="{{simulatePayError}}" style="margin-top:8px;border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">Simular error de pago</button>
+    </sc-if>
+    <sc-if value="{{c10aProcessing}}" hint-placeholder-val="{{false}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:52px;height:52px;border-radius:50%;border:4px solid {{t.surfaceLavender}};border-top-color:{{t.blueDeep}};animation:relwo-spin 0.9s linear infinite;margin-bottom:18px;"></div>
+        <div style="font-weight:700;">Redirigiendo a Transbank…</div>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- C11 Pago protegido -->
+<sc-if value="{{is.C11}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Pago protegido</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+      <div style="width:56px;height:56px;border-radius:50%;background:#E6F4F0;color:{{t.success}};display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;">✓</div>
+      <div style="font-weight:700;margin-bottom:2px;">✓ Pago realizado correctamente.</div>
+      <div style="font-weight:700;margin-bottom:6px;">Pago confirmado y protegido</div>
+      <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:16px;">Tu servicio quedó reservado. Estado: pagada_en_custodia.</div>
+      <button onClick="{{nav.C12}}" style="border:none;border-radius:12px;padding:13px 22px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Ver servicio confirmado</button>
+    </div>
+  </div>
+</sc-if>
+
+<!-- C11E Error de pago -->
+<sc-if value="{{is.C11E}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Pago no procesado</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+      <div style="width:56px;height:56px;border-radius:50%;background:#FDE8E3;color:{{t.error}};display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;">✕</div>
+      <div style="font-weight:700;margin-bottom:6px;">No pudimos procesar tu pago con Transbank</div>
+      <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:4px;">Tu pago fue rechazado o no pudo procesarse.</div>
+      <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:16px;">Verifica tu medio de pago o intenta nuevamente. No se realizó ningún cobro.</div>
+      <button onClick="{{retryPayment}}" style="border:none;border-radius:12px;padding:13px 22px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Reintentar pago</button>
+      <button onClick="{{nav.C10}}" style="margin-top:10px;border:none;background:transparent;color:{{t.textSecondary}};font-size:12.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+    </div>
+  </div>
+</sc-if>
+
+<!-- C12 Confirmado -->
+<sc-if value="{{is.C12}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.HOME}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Servicio confirmado</div>
+    </div>
+    <div style="background:{{t.surfaceLavender}};border-radius:16px;padding:16px;margin-top:8px;display:flex;gap:12px;align-items:center;">
+      <div style="width:48px;height:48px;border-radius:50%;background:{{t.blueDeep}};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:700;">MS</div>
+      <div><div style="font-weight:700;font-size:14px;">Marcela Soto</div><div style="font-size:11.5px;color:{{t.textSecondary}};">Limpieza · ★ 4.9 · Verificada</div></div>
+    </div>
+    <div style="border:1px solid {{t.border}};border-radius:16px;padding:16px;margin-top:12px;display:flex;flex-direction:column;gap:8px;font-size:13px;">
+      <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Día y horario</span><span style="font-weight:700;">Martes 09:00–12:00</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Dirección</span><span style="font-weight:700;">{{comuna}}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Estado de pago</span><span style="font-weight:700;color:{{t.success}};">pagada_en_custodia</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:{{t.textSecondary}};">Recordatorio</span><span style="font-weight:700;">Te avisaremos 1 hora antes</span></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button style="flex:1;border:1px solid {{t.border}};border-radius:12px;padding:12px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Reprogramar</button>
+      <button onClick="{{openAnularModal}}" style="flex:1;border:1px solid {{t.error}};border-radius:12px;padding:12px;background:transparent;color:{{t.error}};font-weight:600;cursor:pointer;">Anular visita</button>
+    </div>
+    <sc-if value="{{anularToast}}" hint-placeholder-val="{{false}}">
+      <div style="background:#E6F4F0;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.success}};margin-top:12px;">✓ Visita anulada correctamente.</div>
+    </sc-if>
+    <sc-if value="{{anularModalOpen}}" hint-placeholder-val="{{false}}">
+      <div style="position:absolute;inset:0;background:rgba(23,36,66,0.45);display:flex;align-items:flex-end;z-index:50;">
+        <div style="width:100%;background:{{t.surface}};border-radius:20px 20px 0 0;padding:20px;box-sizing:border-box;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:12px;">¿Deseas anular esta visita?</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <sc-for list="{{anularReasons}}" as="r" hint-placeholder-count="5">
+              <button onClick="{{r.pick}}" style="text-align:left;border-radius:10px;padding:12px;cursor:pointer;border:1.5px solid {{r.border}};background:{{r.bg}};color:{{r.color}};font-size:13.5px;font-weight:600;">{{r.label}}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{anularReasonOther}}" hint-placeholder-val="{{false}}">
+            <textarea rows="2" placeholder="Indica el motivo" value="{{anularOtherText}}" onChange="{{setAnularOtherText}}" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.bg}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;margin-bottom:12px;"></textarea>
+          </sc-if>
+          <div style="display:flex;gap:8px;">
+            <button onClick="{{closeAnularModal}}" style="flex:1;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Volver</button>
+            <button onClick="{{confirmAnular}}" disabled="{{anularConfirmDisabled}}" style="flex:1;border:none;border-radius:12px;padding:13px;background:{{t.error}};color:#fff;font-weight:700;cursor:pointer;opacity:{{anularConfirmOpacity}};">Anular visita</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.HOME}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Volver al inicio</button>
+  </div>
+</sc-if>
+
+<!-- C13 En curso -->
+<sc-if value="{{is.C13}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C12}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Servicio en curso</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;background:{{t.surface}};border:1px solid {{t.border}};border-radius:16px;padding:14px;margin-top:8px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:{{t.blueDeep}};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:700;">MS</div>
+      <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Marcela Soto</div><div style="font-size:11.5px;color:{{t.textSecondary}};">en_ejecucion</div></div>
+    </div>
+    <div style="margin:16px 0;">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:{{t.success}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">✓</div><span style="font-size:13px;">En camino</span></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:{{t.success}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">✓</div><span style="font-size:13px;">Llegó</span></div>
+      <div style="display:flex;gap:10px;align-items:center;"><div style="width:20px;height:20px;border-radius:50%;background:{{t.coral}};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">●</div><span style="font-size:13px;font-weight:700;">En ejecución</span></div>
+    </div>
+    <div style="height:120px;border-radius:16px;background:{{t.surfaceLavender}};position:relative;overflow:hidden;margin-bottom:14px;">
+      <div style="position:absolute;inset:0;background-image:linear-gradient({{t.border}} 1px, transparent 1px),linear-gradient(90deg, {{t.border}} 1px, transparent 1px);background-size:22px 22px;opacity:0.5;"></div>
+      <div style="position:absolute;bottom:8px;left:8px;font-size:11px;background:{{t.surface}};padding:4px 8px;border-radius:8px;color:{{t.textSecondary}};">Mini-mapa operativo · solo eventos clave</div>
+    </div>
+    <button style="width:100%;border:1px solid {{t.border}};border-radius:12px;padding:12px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;margin-bottom:8px;">💬 Mensajería con la prestadora</button>
+    <button style="width:100%;border:1px solid {{t.border}};border-radius:12px;padding:12px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Contactar soporte</button>
+    <div style="flex:1;"></div>
+    <div style="display:flex;gap:8px;">
+      <button onClick="{{nav.C14}}" style="flex:1;border:1.5px solid {{t.error}};border-radius:12px;padding:14px;background:transparent;color:{{t.error}};font-weight:700;cursor:pointer;">Tuve un problema</button>
+      <button onClick="{{nav.C15}}" style="flex:1;border:none;border-radius:12px;padding:14px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Finalizar servicio</button>
+    </div>
+  </div>
+</sc-if>
+
+<!-- C14 Disputa -->
+<sc-if value="{{is.C14}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C13}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Tuve un problema</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Categoría</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:700;border:1.5px solid {{t.blueDeep}};background:{{t.surfaceLavender}};color:{{t.blueDeep}};">Trabajo incompleto</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Daño material</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Comportamiento</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Otro</span>
+        </div>
+      </div>
+      <textarea rows="3" placeholder="Cuéntanos qué ocurrió" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;"></textarea>
+      <div style="border:1.5px dashed {{t.border}};border-radius:12px;padding:14px;text-align:center;font-size:12.5px;color:{{t.textSecondary}};">+ Adjuntar fotografías o evidencia</div>
+      <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12.5px;color:{{t.blueDeep}};">Tu pago permanece protegido en custodia mientras se revisa el caso.</div>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.C16}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Enviar caso</button>
+    <div style="text-align:center;font-size:11.5px;color:{{t.textSecondary}};margin-top:8px;">Caso #RW-30421 · en_disputa</div>
+  </div>
+</sc-if>
+
+<!-- C15 Cierre -->
+<sc-if value="{{is.C15}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.C13}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Cierre seguro</div>
+    </div>
+    <sc-if value="{{closeNotDone}}" hint-placeholder-val="{{true}}">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Fotografía de confirmación del cliente</div>
+      <div style="font-size:11.5px;color:{{t.textSecondary}};margin-bottom:10px;">Sube una fotografía del trabajo recibido para respaldar el cierre del servicio.</div>
+      <button onClick="{{clientPhotoUpload}}" style="width:100%;border:1.5px dashed {{clientPhotoBorder}};border-radius:14px;padding:20px;text-align:center;font-size:12.5px;color:{{clientPhotoColor}};background:transparent;cursor:pointer;margin-bottom:14px;">{{clientPhotoLabel}}</button>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Ingresa el código de cierre de 3 dígitos</div>
+      <div style="font-size:11.5px;color:{{t.textSecondary}};margin-bottom:10px;">Este código es solo tuyo, exclusivo de este servicio y nunca se muestra al prestador.</div>
+      <div style="display:flex;gap:10px;">
+        <input type="text" maxlength="1" style="width:100%;text-align:center;padding:16px 0;border-radius:12px;border:1.5px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:22px;font-family:'Outfit',sans-serif;">
+        <input type="text" maxlength="1" style="width:100%;text-align:center;padding:16px 0;border-radius:12px;border:1.5px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:22px;font-family:'Outfit',sans-serif;">
+        <input type="text" maxlength="1" style="width:100%;text-align:center;padding:16px 0;border-radius:12px;border:1.5px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:22px;font-family:'Outfit',sans-serif;">
+      </div>
+      <div style="flex:1;"></div>
+      <button onClick="{{confirmClose}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Confirmar término</button>
+    </sc-if>
+    <sc-if value="{{closeDone}}" hint-placeholder-val="{{false}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div style="width:56px;height:56px;border-radius:50%;background:#E6F4F0;color:{{t.success}};display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;">✓</div>
+        <div style="font-weight:700;margin-bottom:6px;">Servicio completado · pago liberado</div>
+        <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:18px;">Estado: completada. Comprobante disponible en tu actividad.</div>
+        <div style="margin-bottom:16px;font-size:22px;">★ ★ ★ ★ ☆</div>
+        <textarea rows="2" placeholder="Cuéntanos cómo estuvo el servicio (opcional)" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-family:'DM Sans',sans-serif;resize:none;margin-bottom:14px;"></textarea>
+        <button onClick="{{nav.C16}}" style="border:none;border-radius:12px;padding:14px 24px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Ver comprobante y actividad</button>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- C16 Actividad -->
+<sc-if value="{{is.C16}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;margin-bottom:14px;">Actividad</div>
+      <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:16px;">
+        <sc-for list="{{activityTabs}}" as="tab" hint-placeholder-count="6">
+          <button onClick="{{tab.go}}" style="flex-shrink:0;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid {{tab.border}};background:{{tab.bg}};color:{{tab.color}};">{{tab.label}}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{activityHasItems}}" hint-placeholder-val="{{true}}">
+        <sc-for list="{{activityItems}}" as="it" hint-placeholder-count="3">
+          <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:14px;">{{it.title}}</span><span style="font-size:11px;color:{{it.stColor}};font-weight:700;">{{it.status}}</span></div>
+            <div style="font-size:12px;color:{{t.textSecondary}};margin-top:4px;">{{it.detail}}</div>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button onClick="{{it.go}}" style="flex:1;border:1px solid {{t.border}};border-radius:10px;padding:8px;background:{{t.surface}};color:{{t.text}};font-size:12px;cursor:pointer;">Ver detalle</button>
+              <button onClick="{{it.repeat}}" style="flex:1;border:none;border-radius:10px;padding:8px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};font-size:12px;font-weight:600;cursor:pointer;">Volver a solicitar</button>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{activityEmpty}}" hint-placeholder-val="{{false}}">
+        <div style="text-align:center;padding:60px 20px;color:{{t.textSecondary}};">
+          <div style="font-size:32px;margin-bottom:10px;">—</div>
+          <div style="font-size:13px;">No hay servicios en esta categoría todavía.</div>
+        </div>
+      </sc-if>
+    </div>
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{clientTabs}}" as="tab" hint-placeholder-count="4">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 4px 12px;cursor:pointer;color:{{tab.color}};font-weight:{{tab.weight}};font-size:11px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<!-- P01 Registro prestador -->
+<sc-if value="{{is.P01}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.A04}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Regístrate como prestador</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div style="display:flex;justify-content:center;"><div style="width:72px;height:72px;border-radius:50%;border:1.5px dashed {{t.border}};display:flex;align-items:center;justify-content:center;font-size:11px;color:{{t.textSecondary}};text-align:center;">Foto</div></div>
+      <input type="text" placeholder="Nombre completo" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};">
+      <input type="text" placeholder="Correo" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};">
+      <input type="text" placeholder="Teléfono" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};">
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Comuna base</label><input type="text" value="Ñuñoa" style="width:100%;box-sizing:border-box;margin-top:6px;padding:12px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};"></div>
+      <div><label style="font-size:12px;font-weight:600;color:{{t.textSecondary}};">Servicios que ofreces</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:700;border:1.5px solid {{t.blueDeep}};background:{{t.surfaceLavender}};color:{{t.blueDeep}};">Limpieza</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Gasfitería</span>
+          <span style="border-radius:20px;padding:8px 14px;font-size:12.5px;border:1px solid {{t.border}};color:{{t.textSecondary}};">Cerrajería</span>
+        </div>
+      </div>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:{{t.textSecondary}};"><input type="checkbox" style="margin-top:2px;">Acepto los Términos y Condiciones para prestadores.</label>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.P02}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar a verificación</button>
+  </div>
+</sc-if>
+
+<!-- P02 Verificacion -->
+<sc-if value="{{is.P02}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P01}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Verificación en 3 capas</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+      <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;font-size:14px;">Identidad</div><div style="font-size:11.5px;color:{{t.textSecondary}};">Cédula subida · privada</div></div>
+        <span style="font-size:11.5px;font-weight:700;color:{{t.success}};background:#E6F4F0;border-radius:20px;padding:5px 10px;">✓ Verificada</span>
+      </div>
+      <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;font-size:14px;">Antecedentes</div><div style="font-size:11.5px;color:{{t.textSecondary}};">Certificado en revisión · privado</div></div>
+        <span style="font-size:11.5px;font-weight:700;color:{{t.warning}};background:#FCEFDD;border-radius:20px;padding:5px 10px;">◷ En revisión</span>
+      </div>
+      <div style="border:1.5px solid {{t.error}};border-radius:14px;padding:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div><div style="font-weight:700;font-size:14px;">Referencias</div><div style="font-size:11.5px;color:{{t.textSecondary}};">Documento rechazado</div></div>
+          <span style="font-size:11.5px;font-weight:700;color:{{t.error}};background:#FDE8E3;border-radius:20px;padding:5px 10px;">✕ Rechazado</span>
+        </div>
+        <div style="font-size:12px;color:{{t.error}};margin-bottom:8px;">La imagen está borrosa. Sube una foto legible del documento.</div>
+        <button style="width:100%;border:none;border-radius:10px;padding:10px;background:{{t.error}};color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;">Corregir documento</button>
+      </div>
+      <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12px;color:{{t.blueDeep}};">El sello RELWO se activa solo cuando las tres capas están vigentes.</div>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{nav.P03}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Continuar</button>
+  </div>
+</sc-if>
+
+<!-- P03 Servicios -->
+<sc-if value="{{is.P03}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P02}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Servicios que ofreces</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+      <sc-for list="{{p03Services}}" as="sv" hint-placeholder-count="3">
+        <button onClick="{{sv.toggle}}" style="text-align:left;border:1.5px solid {{sv.border}};background:{{sv.bg}};border-radius:14px;padding:14px;cursor:pointer;font-family:'DM Sans',sans-serif;">
+          <div style="font-weight:700;font-size:14px;color:{{sv.titleColor}};margin-bottom:4px;">{{sv.name}}</div>
+          <div style="font-size:12px;color:{{t.textSecondary}};">{{sv.desc}}</div>
+        </button>
+      </sc-for>
+      <div style="font-size:11.5px;color:{{t.textSecondary}};">No se exigen certificaciones que no estén respaldadas por la documentación del proyecto.</div>
+      <sc-if value="{{p03Warning}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FCEFDD;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.warning}};">Debes seleccionar al menos un servicio para continuar.</div>
+      </sc-if>
+      <sc-if value="{{p03Success}}" hint-placeholder-val="{{false}}">
+        <div style="background:#E6F4F0;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.success}};">✓ Servicios seleccionados correctamente.</div>
+      </sc-if>
+    </div>
+    <div style="flex:1;"></div>
+    <button onClick="{{goP04}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;opacity:{{p03BtnOpacity}};">Configurar disponibilidad</button>
+  </div>
+</sc-if>
+
+<!-- P04 Disponibilidad -->
+<sc-if value="{{is.P04}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P12}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Disponibilidad</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;background:{{t.surface}};border:1px solid {{t.border}};border-radius:14px;padding:14px;margin:10px 0 14px;">
+      <span style="font-weight:700;font-size:14px;">Disponible para recibir solicitudes</span>
+      <div style="width:44px;height:26px;border-radius:20px;background:{{t.success}};position:relative;"><div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px;">
+      <sc-for list="{{weekDays}}" as="d" hint-placeholder-count="7">
+        <div style="text-align:center;border-radius:10px;padding:8px 2px;font-size:11px;font-weight:700;background:{{d.bg}};color:{{d.color}};">{{d.label}}</div>
+      </sc-for>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};margin-bottom:8px;">BLOQUES HORARIOS</div>
+    <sc-if value="{{p04HasBlocks}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+        <sc-for list="{{p04Blocks}}" as="b" hint-placeholder-count="2">
+          <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid {{t.border}};border-radius:10px;padding:11px 14px;font-size:13px;">
+            <span>{{b.label}}</span>
+            <button onClick="{{b.edit}}" style="border:none;background:transparent;color:{{t.blueDeep}};font-size:13px;cursor:pointer;">✎ Editar</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{p04NoBlocks}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:10px;">No tienes bloques horarios configurados para este día.</div>
+    </sc-if>
+    <button onClick="{{openAddBlock}}" style="width:100%;border:1px dashed {{t.border}};border-radius:10px;padding:11px;background:transparent;color:{{t.blueDeep}};font-weight:600;font-size:13px;cursor:pointer;margin-bottom:14px;">+ Agregar bloque horario</button>
+    <sc-if value="{{p04Toast}}" hint-placeholder-val="{{false}}">
+      <div style="background:#E6F4F0;border-radius:12px;padding:11px;font-size:12.5px;color:{{t.success}};margin-bottom:12px;">✓ {{p04Toast}}</div>
+    </sc-if>
+    <div style="display:flex;justify-content:space-between;align-items:center;background:{{t.surfaceLavender}};border-radius:12px;padding:12px;margin-bottom:12px;">
+      <span style="font-size:13px;color:{{t.blueDeep}};font-weight:600;">Recibir solicitudes urgentes</span>
+      <div style="width:44px;height:26px;border-radius:20px;background:{{t.success}};position:relative;"><div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;"></div></div>
+    </div>
+    <div style="font-size:11.5px;color:{{t.textSecondary}};">Un prestador marcado como no disponible no recibe nuevas solicitudes. Esta disponibilidad filtra el matching de forma obligatoria.</div>
+    <sc-if value="{{p04SaveToast}}" hint-placeholder-val="{{false}}">
+      <div style="background:#E6F4F0;border-radius:12px;padding:11px;font-size:12.5px;color:{{t.success}};margin-top:10px;">✓ Disponibilidad actualizada correctamente.</div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <button onClick="{{saveAvailability}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Guardar disponibilidad</button>
+
+    <sc-if value="{{blockModalOpen}}" hint-placeholder-val="{{false}}">
+      <div style="position:absolute;inset:0;background:rgba(23,36,66,0.45);display:flex;align-items:flex-end;z-index:50;">
+        <div style="width:100%;background:{{t.surface}};border-radius:20px 20px 0 0;padding:20px;box-sizing:border-box;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:14px;">{{blockModalTitle}}</div>
+          <div style="display:flex;gap:20px;justify-content:center;margin-bottom:8px;">
+            <div style="text-align:center;">
+              <div style="font-size:12px;color:{{t.textSecondary}};margin-bottom:6px;">Inicio</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <button onClick="{{blkStartHUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▲</button>
+                  <div style="width:44px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:8px;padding:5px 0;">{{blkStartH}}</div>
+                  <button onClick="{{blkStartHDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▼</button>
+                </div>
+                <span style="font-weight:700;">:</span>
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <button onClick="{{blkStartMUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▲</button>
+                  <div style="width:44px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:8px;padding:5px 0;">{{blkStartM}}</div>
+                  <button onClick="{{blkStartMDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▼</button>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:12px;color:{{t.textSecondary}};margin-bottom:6px;">Término</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <button onClick="{{blkEndHUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▲</button>
+                  <div style="width:44px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:8px;padding:5px 0;">{{blkEndH}}</div>
+                  <button onClick="{{blkEndHDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▼</button>
+                </div>
+                <span style="font-weight:700;">:</span>
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <button onClick="{{blkEndMUp}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▲</button>
+                  <div style="width:44px;text-align:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};border-radius:8px;padding:5px 0;">{{blkEndM}}</div>
+                  <button onClick="{{blkEndMDown}}" style="border:none;background:transparent;color:{{t.textSecondary}};font-size:11px;cursor:pointer;">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <sc-if value="{{blockError}}" hint-placeholder-val="{{false}}">
+            <div style="background:#FDE8E3;border-radius:10px;padding:10px;font-size:12px;color:{{t.error}};margin:10px 0;">{{blockError}}</div>
+          </sc-if>
+          <div style="display:flex;gap:8px;margin-top:14px;">
+            <button onClick="{{closeBlockModal}}" style="flex:1;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Cancelar</button>
+            <button onClick="{{saveBlock}}" style="flex:1;border:none;border-radius:12px;padding:13px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">{{blockSaveLabel}}</button>
+          </div>
+          <sc-if value="{{blockEditingExisting}}" hint-placeholder-val="{{false}}">
+            <button onClick="{{openDeleteBlockConfirm}}" style="width:100%;margin-top:10px;border:none;background:transparent;color:{{t.error}};font-weight:600;font-size:13px;cursor:pointer;">Eliminar bloque</button>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{deleteBlockModalOpen}}" hint-placeholder-val="{{false}}">
+      <div style="position:absolute;inset:0;background:rgba(23,36,66,0.45);display:flex;align-items:flex-end;z-index:60;">
+        <div style="width:100%;background:{{t.surface}};border-radius:20px 20px 0 0;padding:20px;box-sizing:border-box;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:8px;">¿Eliminar este bloque horario?</div>
+          <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:16px;">Durante este horario dejarás de aparecer disponible para nuevas solicitudes.</div>
+          <div style="display:flex;gap:8px;">
+            <button onClick="{{closeDeleteBlockConfirm}}" style="flex:1;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Volver</button>
+            <button onClick="{{confirmDeleteBlock}}" style="flex:1;border:none;border-radius:12px;padding:13px;background:{{t.error}};color:#fff;font-weight:700;cursor:pointer;">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- P05 Inicio prestador -->
+<sc-if value="{{is.P05}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;">Hola, Jorge</div>
+          <div style="display:flex;gap:6px;margin-top:6px;">
+            <span style="font-size:11px;font-weight:700;color:{{t.success}};background:#E6F4F0;border-radius:20px;padding:4px 10px;">✓ Verificado</span>
+            <span style="font-size:11px;font-weight:700;color:{{t.success}};background:#E6F4F0;border-radius:20px;padding:4px 10px;">● Disponible</span>
+          </div>
+        </div>
+        <button onClick="{{nav.P04}}" style="width:38px;height:38px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">⚙</button>
+      </div>
+      <div style="background:{{t.surfaceLavender}};border-radius:16px;padding:16px;margin-bottom:14px;">
+        <div style="font-size:12px;color:{{t.blueDeep}};margin-bottom:4px;">Próximo servicio</div>
+        <div style="font-weight:700;font-size:14px;color:{{t.blueDeep}};">Gasfitería · Hoy 16:00 · {{comuna}}</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;">
+        <div style="flex:1;border:1px solid {{t.border}};border-radius:14px;padding:14px;text-align:center;"><div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;">2</div><div style="font-size:11px;color:{{t.textSecondary}};">Hoy</div></div>
+        <div style="flex:1;border:1px solid {{t.border}};border-radius:14px;padding:14px;text-align:center;"><div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;">$186.400</div><div style="font-size:11px;color:{{t.textSecondary}};">Ganado hoy</div></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Solicitudes pendientes</div>
+      <button onClick="{{nav.P06}}" style="width:100%;text-align:left;border:1.5px solid {{t.coral}};border-radius:14px;padding:14px;background:{{t.surface}};cursor:pointer;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:14px;">Gasfitería · Urgente</span><span style="color:{{t.coral}};font-weight:700;font-size:12px;">Nueva</span></div>
+        <div style="font-size:12px;color:{{t.textSecondary}};margin-top:4px;">{{comuna}} · Hoy 16:00–18:00</div>
+      </button>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Resumen de agenda</div>
+      <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;font-size:12.5px;color:{{t.text}};">Mañana: 2 servicios confirmados · Jueves: 1 servicio urgente reservado</div>
+    </div>
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{providerTabs}}" as="tab" hint-placeholder-count="5">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 2px 12px;cursor:pointer;color:{{tab.color}};font-weight:{{tab.weight}};font-size:10.5px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<!-- P06 Nueva solicitud -->
+<sc-if value="{{is.P06}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P05}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Nueva solicitud</div>
+    </div>
+    <div style="border:1.5px solid {{t.coral}};border-radius:16px;padding:16px;margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Servicio</span><span style="font-weight:700;">Gasfitería · Filtración</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Zona / comuna</span><span style="font-weight:700;">Sector oriente · {{comuna}}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Día</span><span style="font-weight:700;">Hoy</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Hora solicitada</span><span style="font-weight:700;">16:00 hrs</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Características</span><span style="font-weight:700;">Requiere herramientas de filtración</span></div>
+    </div>
+    <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;margin-top:12px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Fotografía del problema</div>
+      <div style="height:130px;border-radius:12px;background:{{t.surfaceLavender}};display:flex;align-items:center;justify-content:center;font-size:28px;">📷</div>
+      <div style="font-size:11px;color:{{t.textSecondary}};margin-top:6px;">Fotografía enviada por el cliente.</div>
+    </div>
+    <div style="background:{{t.surfaceLavender}};border-radius:12px;padding:12px;font-size:12px;color:{{t.blueDeep}};margin-top:12px;">La dirección exacta se entrega solo después de aceptar y quedar asignado.</div>
+    <div style="margin-top:14px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px;">¿Cuánto cobrarías por este trabajo?</div>
+      <input type="text" placeholder="$ Ingrese el valor" value="{{quoteInput}}" onChange="{{setQuoteInput}}" style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};font-size:14px;">
+      <div style="font-size:11px;color:{{t.textSecondary}};margin-top:6px;">Este será el valor que verá el cliente antes de aceptar tu propuesta.</div>
+    </div>
+    <sc-if value="{{quoteSentToast}}" hint-placeholder-val="{{false}}">
+      <div style="background:#E6F4F0;border-radius:12px;padding:12px;margin-top:12px;">
+        <div style="font-size:12.5px;color:{{t.success}};font-weight:700;">✓ Cotización enviada correctamente.</div>
+        <div style="font-size:11.5px;color:{{t.success}};margin-top:2px;">El cliente recibirá tu propuesta y podrá aceptarla o solicitar otra.</div>
+      </div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <div style="display:flex;gap:8px;">
+      <button onClick="{{nav.P05}}" style="flex:1;border:1.5px solid {{t.error}};border-radius:12px;padding:15px;background:transparent;color:{{t.error}};font-weight:700;cursor:pointer;">Rechazar</button>
+      <button onClick="{{sendQuote}}" disabled="{{quoteInvalid}}" style="flex:1;border:none;border-radius:12px;padding:15px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;opacity:{{quoteBtnOpacity}};">Enviar cotización</button>
+    </div>
+  </div>
+</sc-if>
+
+<!-- P07 Aceptada -->
+<sc-if value="{{is.P07}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P05}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Solicitud aceptada</div>
+    </div>
+    <div style="background:#E6F4F0;border-radius:12px;padding:12px;font-size:12.5px;color:{{t.success}};margin:8px 0 14px;">✓ Quedaste asignado. Ya puedes ver la dirección exacta.</div>
+    <div style="border:1px solid {{t.border}};border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Cliente</span><span style="font-weight:700;">Camila Vergara · +56 9 8123 4567</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Dirección exacta</span><span style="font-weight:700;">Av. Irarrázaval 3200, depto 405</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Acceso autorizado</span><span style="font-weight:700;">Conserjería, timbre 405</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:{{t.textSecondary}};">Día y hora</span><span style="font-weight:700;">Hoy · 16:00 hrs</span></div>
+    </div>
+    <div style="height:110px;border-radius:14px;background:{{t.surfaceLavender}};display:flex;align-items:center;justify-content:center;font-size:12px;color:{{t.blueDeep}};margin-top:12px;">Ruta hacia el domicilio</div>
+    <div style="flex:1;"></div>
+    <button onClick="{{goP09}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Comenzar ruta</button>
+  </div>
+</sc-if>
+
+<!-- P08 Agenda -->
+<sc-if value="{{is.P08}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;margin-bottom:14px;">Agenda semanal</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:16px;">
+        <sc-for list="{{weekDays}}" as="d" hint-placeholder-count="7">
+          <div style="text-align:center;border-radius:10px;padding:8px 2px;font-size:11px;font-weight:700;background:{{d.bg}};color:{{d.color}};">{{d.label}}</div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:13.5px;">Limpieza · Confirmado</span><span style="font-size:11px;color:{{t.success}};font-weight:700;">✓ confirmada</span></div><div style="font-size:12px;color:{{t.textSecondary}};margin-top:4px;">Mañana 09:00–12:00 · Ñuñoa</div></div>
+        <div style="border:1.5px solid {{t.error}};border-radius:14px;padding:14px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:13.5px;">Gasfitería · Urgente</span><span style="font-size:11px;color:{{t.error}};font-weight:700;">⚠ urgente</span></div><div style="font-size:12px;color:{{t.textSecondary}};margin-top:4px;">Hoy 16:00–18:00 · Ñuñoa</div></div>
+        <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;opacity:0.6;"><div style="font-size:13px;color:{{t.textSecondary}};">Jueves 15:00–19:00 · sin servicios agendados</div></div>
+      </div>
+    </div>
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{providerTabs}}" as="tab" hint-placeholder-count="5">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 2px 12px;cursor:pointer;color:{{tab.color}};font-weight:{{tab.weight}};font-size:10.5px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<!-- P09 Ruta hacia el cliente -->
+<sc-if value="{{is.P09}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P07}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Ruta hacia el cliente</div>
+    </div>
+    <div style="height:180px;border-radius:16px;background:{{t.surfaceLavender}};position:relative;overflow:hidden;margin:8px 0 14px;">
+      <div style="position:absolute;inset:0;background-image:linear-gradient({{t.border}} 1px, transparent 1px),linear-gradient(90deg, {{t.border}} 1px, transparent 1px);background-size:22px 22px;opacity:0.5;"></div>
+      <div style="position:absolute;top:70%;left:20%;width:14px;height:14px;border-radius:50%;background:{{t.blueDeep}};"></div>
+      <div style="position:absolute;top:25%;left:70%;width:14px;height:14px;border-radius:50% 50% 50% 0;background:{{t.coral}};transform:rotate(-45deg);"></div>
+      <div style="position:absolute;bottom:8px;left:8px;font-size:11px;background:{{t.surface}};padding:4px 8px;border-radius:8px;color:{{t.textSecondary}};">Distancia estimada: 2,1 km</div>
+    </div>
+    <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;font-size:12.5px;">Camila Vergara · Av. Irarrázaval 3200, depto 405</div>
+    <div style="font-size:12.5px;color:{{t.textSecondary}};margin-top:8px;">Hora del servicio: 16:00 hrs</div>
+    <button style="width:100%;border:1px solid {{t.border}};border-radius:12px;padding:12px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;margin-top:14px;">💬 Mensajería con el cliente</button>
+    <div style="flex:1;"></div>
+    <button onClick="{{goP09A}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;">Comenzar trabajo</button>
+  </div>
+</sc-if>
+
+<!-- P09A Verificacion inicial -->
+<sc-if value="{{is.P09A}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P09}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Antes de comenzar</div>
+    </div>
+    <div style="border:1px solid {{t.border}};border-radius:14px;padding:14px;margin:8px 0 14px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
+      <div><b>Dirección:</b> Av. Irarrázaval 3200, depto 405</div>
+      <div><b>Cliente:</b> Camila Vergara</div>
+      <div><b>Servicio:</b> Gasfitería · Filtración</div>
+      <div><b>Descripción:</b> Filtración bajo el lavaplatos de la cocina</div>
+      <div><b>Fecha y hora:</b> Hoy · 16:00 hrs</div>
+      <div><b>Notas:</b> Conserjería, timbre 405</div>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px;">Fotografía del estado inicial</div>
+    <div style="font-size:11.5px;color:{{t.textSecondary}};margin-bottom:10px;">Antes de iniciar el servicio debes registrar una fotografía del problema o del área de trabajo.</div>
+    <button onClick="{{initialPhotoUpload}}" style="border:1.5px dashed {{initialPhotoBorder}};border-radius:14px;padding:20px;text-align:center;font-size:12.5px;color:{{initialPhotoColor}};background:transparent;cursor:pointer;">{{initialPhotoLabel}}</button>
+    <sc-if value="{{initialPhotoWarning}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:11.5px;color:{{t.warning}};margin-top:8px;">Debes subir una fotografía antes de iniciar el servicio.</div>
+    </sc-if>
+    <sc-if value="{{serviceStartedToast}}" hint-placeholder-val="{{false}}">
+      <div style="background:#E6F4F0;border-radius:12px;padding:12px;margin-top:12px;">
+        <div style="font-size:12.5px;color:{{t.success}};font-weight:700;">✓ Servicio iniciado correctamente.</div>
+        <div style="font-size:11.5px;color:{{t.success}};margin-top:2px;">Estado: Servicio en curso.</div>
+      </div>
+    </sc-if>
+    <div style="flex:1;"></div>
+    <button onClick="{{startService}}" disabled="{{startServiceDisabled}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;opacity:{{startServiceOpacity}};">Iniciar servicio</button>
+    <sc-if value="{{serviceStartedToast}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{nav.P10}}" style="margin-top:8px;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Ir a finalizar servicio</button>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- P10 Finalizar -->
+<sc-if value="{{is.P10}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;padding:0 24px 24px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 0 8px;">
+      <button onClick="{{nav.P09}}" style="width:36px;height:36px;border-radius:10px;border:1px solid {{t.border}};background:{{t.surface}};color:{{t.text}};cursor:pointer;">←</button>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;">Finalizar servicio</div>
+    </div>
+    <sc-if value="{{p10NotSent}}" hint-placeholder-val="{{true}}">
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};margin:10px 0 8px;">CHECKLIST</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        <label style="display:flex;gap:8px;align-items:center;font-size:13px;"><input type="checkbox" checked>Trabajo finalizado</label>
+        <label style="display:flex;gap:8px;align-items:center;font-size:13px;"><input type="checkbox" checked>Zona de trabajo limpia</label>
+        <label style="display:flex;gap:8px;align-items:center;font-size:13px;"><input type="checkbox">Materiales sobrantes retirados</label>
+      </div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Fotografía del trabajo realizado</div>
+      <div style="font-size:11.5px;color:{{t.textSecondary}};margin-bottom:10px;">Debes subir una fotografía del trabajo realizado para enviar la evidencia.</div>
+      <button onClick="{{finalPhotoUpload}}" style="width:100%;border:1.5px dashed {{finalPhotoBorder}};border-radius:12px;padding:16px;text-align:center;font-size:12.5px;color:{{finalPhotoColor}};background:transparent;cursor:pointer;margin-bottom:10px;">{{finalPhotoLabel}}</button>
+      <div style="font-size:11.5px;color:{{t.textSecondary}};">Esta pantalla nunca solicita el código de cierre — ese código lo ingresa el cliente.</div>
+      <div style="flex:1;"></div>
+      <button onClick="{{sendEvidence}}" disabled="{{sendEvidenceDisabled}}" style="border:none;border-radius:12px;padding:16px;background:{{t.coral}};color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer;opacity:{{sendEvidenceOpacity}};">Enviar evidencia</button>
+    </sc-if>
+    <sc-if value="{{p10Sent}}" hint-placeholder-val="{{false}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:50%;background:#E6F4F0;color:{{t.success}};display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;">✓</div>
+        <div style="font-weight:700;margin-bottom:2px;">Evidencia enviada correctamente.</div>
+        <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:18px;">El cliente deberá revisar el trabajo y completar el cierre seguro.</div>
+        <button onClick="{{confirmPaidOut}}" style="border:none;border-radius:12px;padding:13px 22px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Simular confirmación del cliente</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{p10Paid}}" hint-placeholder-val="{{false}}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div style="width:56px;height:56px;border-radius:50%;background:#E6F4F0;color:{{t.success}};display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;">✓</div>
+        <div style="font-weight:700;margin-bottom:6px;">Pago liberado</div>
+        <div style="font-size:12.5px;color:{{t.textSecondary}};margin-bottom:6px;">El cliente evaluó tu servicio con ★ 4.9</div>
+        <button onClick="{{nav.P05}}" style="margin-top:10px;border:none;border-radius:12px;padding:13px 22px;background:{{t.coral}};color:#fff;font-weight:700;cursor:pointer;">Volver al inicio</button>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<!-- P11 Ganancias -->
+<sc-if value="{{is.P11}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;margin-bottom:14px;">Ganancias</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div style="flex:1;background:{{t.surfaceLavender}};border-radius:14px;padding:14px;text-align:center;"><div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:{{t.blueDeep}};">$186.400</div><div style="font-size:11px;color:{{t.blueDeep}};">Hoy</div></div>
+        <div style="flex:1;border:1px solid {{t.border}};border-radius:14px;padding:14px;text-align:center;"><div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;">$742.100</div><div style="font-size:11px;color:{{t.textSecondary}};">Semana</div></div>
+        <div style="flex:1;border:1px solid {{t.border}};border-radius:14px;padding:14px;text-align:center;"><div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;">$2.980.500</div><div style="font-size:11px;color:{{t.textSecondary}};">Mes</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;background:{{t.surface}};border:1px solid {{t.border}};border-radius:12px;padding:12px 14px;margin-bottom:8px;"><span style="color:{{t.textSecondary}};">Pagos pendientes de liberación</span><span style="font-weight:700;color:{{t.warning}};">$32.400</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;background:{{t.surface}};border:1px solid {{t.border}};border-radius:12px;padding:12px 14px;margin-bottom:16px;"><span style="color:{{t.textSecondary}};">Pagos liberados este mes</span><span style="font-weight:700;color:{{t.success}};">$2.948.100</span></div>
+      <div style="font-size:12px;font-weight:700;color:{{t.textSecondary}};text-transform:uppercase;margin-bottom:8px;">Detalle por servicio</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid {{t.border}};padding:10px 2px;font-size:12.5px;"><span>Limpieza · Marcela P.</span><span style="font-weight:700;">$39.500</span></div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid {{t.border}};padding:10px 2px;font-size:12.5px;"><span>Gasfitería · Urgente</span><span style="font-weight:700;">$13.350</span></div>
+      </div>
+      <button style="width:100%;margin-top:16px;border:1px solid {{t.border}};border-radius:12px;padding:12px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Boletas emitidas</button>
+    </div>
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{providerTabs}}" as="tab" hint-placeholder-count="5">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 2px 12px;cursor:pointer;color:{{tab.color}};font-weight:{{tab.weight}};font-size:10.5px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<!-- P12 Perfil prestador -->
+<sc-if value="{{is.P12}}" hint-placeholder-val="{{false}}">
+  <div style="display:flex;flex-direction:column;height:100%;">
+    <div style="flex:1;overflow-y:auto;padding:20px 20px 96px;box-sizing:border-box;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:19px;margin-bottom:16px;">Mi perfil</div>
+      <div style="display:flex;align-items:center;gap:14px;background:{{t.surface}};border:1px solid {{t.border}};border-radius:16px;padding:16px;margin-bottom:16px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:{{t.blueDeep}};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;">JM</div>
+        <div><div style="font-weight:700;font-size:15px;">Jorge Muñoz</div><div style="font-size:12px;color:{{t.textSecondary}};">★ 4.8 · 132 servicios · ✓ Verificado</div></div>
+      </div>
+      <sc-for list="{{providerProfileRows}}" as="row" hint-placeholder-count="9">
+        <button onClick="{{row.go}}" style="width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;border:none;border-bottom:1px solid {{t.border}};background:transparent;padding:14px 4px;cursor:pointer;color:{{t.text}};">
+          <span style="font-size:14px;">{{row.label}}</span><span style="font-size:12px;color:{{t.textSecondary}};">{{row.value}} ›</span>
+        </button>
+      </sc-for>
+      <button onClick="{{setRoleCliente}}" style="width:100%;margin-top:14px;border:1.5px solid {{t.blueDeep}};border-radius:12px;padding:13px;background:{{t.surfaceLavender}};color:{{t.blueDeep}};font-weight:700;cursor:pointer;">Cambiar a modo cliente</button>
+      <button onClick="{{nav.A01}}" style="width:100%;margin-top:10px;border:1px solid {{t.border}};border-radius:12px;padding:13px;background:{{t.surface}};color:{{t.text}};font-weight:600;cursor:pointer;">Cerrar sesión</button>
+    </div>
+    <div style="flex-shrink:0;display:flex;border-top:1px solid {{t.border}};background:{{t.surface}};">
+      <sc-for list="{{providerTabs}}" as="tab" hint-placeholder-count="5">
+        <button onClick="{{tab.go}}" style="flex:1;border:none;background:transparent;padding:10px 2px 12px;cursor:pointer;color:{{tab.color}};font-weight:{{tab.weight}};font-size:10.5px;">
+          <div style="font-size:16px;">{{tab.icon}}</div>{{tab.label}}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'A01', theme: 'light', role: 'cliente', telVariant: 'A', service: null,
+    modalidad: 'hoy', emergencyType: null, showPassword: false, interestNote: null,
+    mapOpen: true, offlineDemo: false, locationDenied: false, comuna: 'Ñuñoa',
+    paymentStatus: 'idle', providerStep: 0, activityTab: 'proximos', noProvidersDemo: false,
+    verifyStage: 'idle', cverState: 'verified',
+    mascotas: [{ id: 1, type: 'Gato', qty: 2, otherLabel: '' }, { id: 2, type: 'Perro', qty: 1, otherLabel: '' }],
+    selectedDay: 6, hh: 10, mm: 0, extraDates: [], nextExtraId: 1,
+    photoGas: false, photoGasWarn: false, photoCerr: false, photoCerrWarn: false,
+    c09State: 'idle', cancelModalOpen: false, cancelReason: null, cancelOtherText: '',
+    quoteInput: '', quoteSentToast: false,
+    acceptedToast: false, buscarOtroModalOpen: false,
+    anularModalOpen: false, anularReason: null, anularOtherText: '', anularToast: false,
+    initialPhoto: false, initialPhotoWarn: false, serviceStartedToast: false,
+    finalPhoto: false, clientPhoto: false,
+    p03Selected: ['limpieza'], p03Warning: false, p03Success: false,
+    p04ActiveDay: 'L',
+    p04BlocksByDay: { L: [{ id: 1, sh: 9, sm: 0, eh: 13, em: 0 }, { id: 2, sh: 15, sm: 0, eh: 19, em: 0 }] },
+    p04NextId: 3, p04Toast: '', p04SaveToast: false,
+    blockModalOpen: false, blockEditingId: null, blkStartH: 9, blkStartM: 0, blkEndH: 13, blkEndM: 0, blockError: '',
+    deleteBlockModalOpen: false,
+  };
+
+  go(id) { this.setState({ screen: id }); window.scrollTo && window.scrollTo(0,0); }
+
+  openBlockEditor(b) { this.setState({ blockModalOpen: true, blockEditingId: b.id, blkStartH: b.sh, blkStartM: b.sm, blkEndH: b.eh, blkEndM: b.em, blockError: '' }); }
+
+  renderVals() {
+    const s = this.state;
+    const light = { blueDeep:'#243B6B', blueNight:'#172442', lavender:'#7C6EE6', coral:'#F06449', bg:'#F6F7FB', surface:'#FFFFFF', surfaceLavender:'#F0EEFF', text:'#202636', textSecondary:'#667085', border:'#DDE1EB', success:'#16856B', warning:'#D97706', error:'#D64545' };
+    const dark = { blueDeep:'#7796D8', blueNight:'#0B111C', lavender:'#A99EF5', coral:'#FF826B', bg:'#121827', surface:'#1D2638', surfaceLavender:'#263249', text:'#F7F8FC', textSecondary:'#B8C0D0', border:'#364258', success:'#4EC9A6', warning:'#FBBF24', error:'#FF7777' };
+    const t = s.theme === 'dark' ? dark : light;
+
+    const ids = ['A01','A02','A03','A04','A05','A06','CVER','C01','C02','C03','C04','HOME','C06G','C06C','C05','E01','E02','C07','C08','C09','C10','C10A','C11','C11E','C12','C13','C14','C15','C16','P01','P02','P03','P04','P05','P06','P07','P08','P09','P09A','P10','P11','P12'];
+    const is = {}; ids.forEach(id => { is[id] = s.screen === id; });
+    const nav = {}; ids.forEach(id => { nav[id] = () => this.go(id); });
+
+    const labels = { A01:'Bienvenida', A02:'Iniciar sesión', A03:'Recuperar contraseña', A04:'Selección de rol', A05:'Registro cliente', A06:'Verificar identidad', CVER:'Verificación cliente', HOME:'Inicio', C01:'Perfil', C02:'Teléfono de referencia', C03:'Perfil del hogar', C04:'Dirección y comuna', C06G:'Solicitud · Gasfitería', C06C:'Solicitud · Cerrajería', C05:'¿Cuándo?', E01:'Selección emergencia', E02:'Confirmación emergencia', C07:'Buscando oferentes', C08:'Sin oferentes disponibles', C09:'Solicitud enviada', C10:'Propuesta recibida', C10A:'Confirmar pago', C11:'Pago protegido', C11E:'Error de pago', C12:'Servicio confirmado', C13:'Servicio en curso', C14:'Disputa', C15:'Cierre seguro', C16:'Actividad e historial', P01:'Registro prestador', P02:'Verificación', P03:'Servicios que ofrece', P04:'Disponibilidad', P05:'Inicio prestador', P06:'Nueva solicitud', P07:'Solicitud aceptada', P08:'Agenda', P09:'Ruta hacia el cliente', P09A:'Verificación inicial', P10:'Finalizar servicio', P11:'Ganancias', P12:'Perfil y soporte' };
+    const groups = [
+      ['Acceso', ['A01','A02','A03','A04','A05','A06','CVER']],
+      ['Cliente · Perfil', ['C01','C02','C03','C04']],
+      ['Cliente · Solicitud', ['HOME','C06G','C06C','C05']],
+      ['Emergencia', ['E01','E02']],
+      ['Cliente · Búsqueda y cotización', ['C07','C08','C09','C10']],
+      ['Cliente · Pago', ['C10A','C11','C11E']],
+      ['Cliente · Seguimiento', ['C12','C13','C14','C15','C16']],
+      ['Prestador · Registro', ['P01','P02','P03','P04']],
+      ['Prestador · Solicitudes', ['P05','P06','P07']],
+      ['Prestador · Ejecución', ['P08','P09','P09A','P10']],
+      ['Prestador · Cuenta', ['P11','P12']],
+    ];
+    const screenMap = groups.map(([group, gids]) => ({
+      group,
+      items: gids.map(id => ({ id, label: labels[id], go: nav[id], bg: is[id] ? t.surfaceLavender : 'transparent', color: is[id] ? t.blueDeep : t.textSecondary, weight: is[id] ? 700 : 500 })),
+    }));
+
+    const comunasBase = [
+      { name: 'Ñuñoa', cobertura: true }, { name: 'Providencia', cobertura: true },
+      { name: 'Las Condes', cobertura: true }, { name: 'La Reina', cobertura: true },
+      { name: 'Puente Alto', cobertura: false },
+    ];
+    const comunas = comunasBase.map(c => ({
+      name: c.name,
+      pick: () => this.setState({ comuna: c.name }),
+      border: c.name === s.comuna ? t.blueDeep : t.border,
+      bg: c.name === s.comuna ? t.surfaceLavender : 'transparent',
+      color: c.name === s.comuna ? t.blueDeep : t.textSecondary,
+    }));
+    const comunaCoveredNow = comunasBase.find(c => c.name === s.comuna)?.cobertura;
+
+    const proximamenteBase = ['Electricidad', 'Jardinería', 'Armado de muebles', 'Modista'];
+    const proximamente = proximamenteBase.map(name => ({ name, notify: () => this.setState({ interestNote: name }) }));
+
+    const clientTabs = [
+      { id: 'HOME', label: 'Inicio', icon: '⌂', go: nav.HOME },
+      { id: 'SERV', label: 'Servicios', icon: '▤', go: nav.HOME },
+      { id: 'ACT', label: 'Actividad', icon: '◷', go: nav.C16 },
+      { id: 'PROF', label: 'Perfil', icon: '☺', go: nav.C01 },
+    ].map(tItem => ({ ...tItem, color: (tItem.id === 'HOME' || tItem.id === 'SERV') ? (is.HOME ? t.coral : t.textSecondary) : (tItem.id === 'ACT' ? (is.C16 ? t.coral : t.textSecondary) : (is.C01 ? t.coral : t.textSecondary)), weight: 600 }));
+
+    const profileRows = [
+      { label: 'Comuna', value: s.comuna, go: nav.C04 },
+      { label: 'Direcciones guardadas', value: '1 guardada', go: nav.C04 },
+      { label: 'Datos del hogar', value: 'Depto · 2D 1B', go: nav.C03 },
+      { label: 'Teléfono de referencia', value: 'Configurar', go: nav.C02 },
+      { label: 'Métodos de pago', value: '•••• 4471', go: nav.C11 },
+      { label: 'Notificaciones', value: 'Activas', go: nav.C01 },
+      { label: 'Privacidad', value: '', go: nav.C01 },
+      { label: 'Seguridad', value: '', go: nav.C01 },
+      { label: 'Ayuda', value: '', go: nav.C01 },
+    ];
+
+    const modalidad = s.modalidad;
+
+    // Mascotas estructuradas
+    const mascotas = s.mascotas.map(m => ({
+      ...m,
+      isOther: m.type === 'Otros',
+      setType: (e) => { const v = e.target.value; this.setState(x => ({ mascotas: x.mascotas.map(row => row.id === m.id ? { ...row, type: v } : row) })); },
+      setQty: (e) => { const v = e.target.value; this.setState(x => ({ mascotas: x.mascotas.map(row => row.id === m.id ? { ...row, qty: v } : row) })); },
+      setOther: (e) => { const v = e.target.value; this.setState(x => ({ mascotas: x.mascotas.map(row => row.id === m.id ? { ...row, otherLabel: v } : row) })); },
+      remove: () => this.setState(x => ({ mascotas: x.mascotas.filter(row => row.id !== m.id) })),
+    }));
+    const addMascota = () => this.setState(x => ({ mascotas: [...x.mascotas, { id: Date.now(), type: 'Perro', qty: 1, otherLabel: '' }] }));
+
+    // Fecha y hora tipo rueda, limitado al mes de agosto en curso
+    const todayNum = 6, monthDays = 31;
+    const dayName = (num) => new Date(2026, 7, num).toLocaleDateString('es-CL', { weekday: 'long' });
+    const dayFull = (num) => `${dayName(num)} ${num} de agosto`;
+    const selDay = s.selectedDay;
+    const buildDaySlot = (num, isCenter) => num == null ? { label: '', size: '13px', weight: 400, color: 'transparent' } : { label: `${dayName(num).slice(0,3)} ${num}`, size: isCenter ? '16px' : '12.5px', weight: isCenter ? 700 : 400, color: isCenter ? t.blueDeep : t.textSecondary };
+    const prevDayNum = (selDay - 1 >= todayNum) ? selDay - 1 : null;
+    const nextDayNum = (selDay + 1 <= monthDays) ? selDay + 1 : null;
+    const dayWheel = [buildDaySlot(prevDayNum, false), buildDaySlot(selDay, true), buildDaySlot(nextDayNum, false)];
+    const dayPrev = () => { if (prevDayNum != null) this.setState({ selectedDay: prevDayNum }); };
+    const dayNext = () => { if (nextDayNum != null) this.setState({ selectedDay: nextDayNum }); };
+
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const hh = pad2(s.hh), mm = pad2(s.mm);
+    const hourUp = () => this.setState(x => ({ hh: (x.hh + 1) % 24 }));
+    const hourDown = () => this.setState(x => ({ hh: (x.hh + 23) % 24 }));
+    const minUp = () => this.setState(x => ({ mm: (x.mm + 5) % 60 }));
+    const minDown = () => this.setState(x => ({ mm: (x.mm + 55) % 60 }));
+    const homeAddress = 'Av. Irarrázaval 2450, Ñuñoa';
+    const serviceLabelC05Map = { limpieza: 'Limpieza del hogar', gasfiteria: 'Gasfitería', cerrajeria: 'Cerrajería' };
+    const serviceLabelC05Short = { limpieza: 'limpieza', gasfiteria: 'gasfitería', cerrajeria: 'cerrajería' };
+    const serviceLabelC05 = serviceLabelC05Map[s.service] || 'Servicio';
+
+    const extraDates = s.extraDates.map(ed => ({
+      dateLabel: `${dayFull(ed.day)} · ${pad2(ed.hh)}:${pad2(ed.mm)} hrs`,
+      address: homeAddress,
+      edit: () => { this.setState(x => ({ extraDates: x.extraDates.map(row => row.id === ed.id ? { ...row, mm: (row.mm + 30) % 60, hh: row.mm + 30 >= 60 ? (row.hh + 1) % 24 : row.hh } : row) })); },
+      remove: () => this.setState(x => ({ extraDates: x.extraDates.filter(row => row.id !== ed.id) })),
+    }));
+    const addExtraDate = () => {
+      const day = Math.min(selDay + 5 + s.extraDates.length, monthDays);
+      this.setState(x => ({ extraDates: [...x.extraDates, { id: x.nextExtraId, day, hh: x.hh, mm: x.mm }], nextExtraId: x.nextExtraId + 1 }));
+    };
+    const totalServices = 1 + s.extraDates.length;
+    const scheduleSub = totalServices === 1 ? `${dayFull(selDay)} · ${hh}:${mm} hrs` : `${totalServices} días programados durante agosto`;
+    const scheduleLines = totalServices > 1 ? [
+      `${dayName(selDay).slice(0,3)} ${selDay} · ${hh}:${mm} hrs`,
+      ...s.extraDates.map(ed => `${dayName(ed.day).slice(0,3)} ${ed.day} · ${pad2(ed.hh)}:${pad2(ed.mm)} hrs`),
+    ] : [];
+    const continueLabel = modalidad === 'hoy' ? 'Continuar' : `Confirmar días de ${serviceLabelC05Short[s.service] || 'limpieza'}`;
+
+
+    const serviceLabels = { limpieza: 'Limpieza del hogar', gasfiteria: 'Gasfitería', cerrajeria: 'Cerrajería' };
+    const serviceLabel = serviceLabels[s.service] || 'Servicio';
+
+    const cancelReasonDefs = ['Cambié de idea', 'No podré estar ese día', 'Me equivoqué de hora o fecha', 'Otros'];
+    const cancelReasons = cancelReasonDefs.map(label => ({
+      label, pick: () => this.setState({ cancelReason: label }),
+      border: s.cancelReason === label ? t.blueDeep : t.border, bg: s.cancelReason === label ? t.surfaceLavender : 'transparent', color: s.cancelReason === label ? t.blueDeep : t.text,
+    }));
+    const cancelReasonOther = s.cancelReason === 'Otros';
+    const cancelConfirmDisabled = !s.cancelReason || (cancelReasonOther && !s.cancelOtherText.trim());
+
+    const anularReasonDefs = ['Cambié de idea', 'No podré estar ese día', 'Me equivoqué de fecha u hora', 'Ya no necesito el servicio', 'Otros'];
+    const anularReasons = anularReasonDefs.map(label => ({
+      label, pick: () => this.setState({ anularReason: label }),
+      border: s.anularReason === label ? t.blueDeep : t.border, bg: s.anularReason === label ? t.surfaceLavender : 'transparent', color: s.anularReason === label ? t.blueDeep : t.text,
+    }));
+    const anularReasonOther = s.anularReason === 'Otros';
+    const anularConfirmDisabled = !s.anularReason || (anularReasonOther && !s.anularOtherText.trim());
+
+    const quoteNum = parseFloat((s.quoteInput || '').replace(/[^0-9]/g, ''));
+    const quoteInvalid = !s.quoteInput || isNaN(quoteNum) || quoteNum <= 0;
+
+    const activityTabDefs = [
+      { id: 'proximos', label: 'Próximos' }, { id: 'curso', label: 'En curso' }, { id: 'cierre', label: 'Por cerrar' },
+      { id: 'completados', label: 'Completados' }, { id: 'cancelados', label: 'Cancelados' }, { id: 'disputa', label: 'En disputa' },
+    ];
+    const activityTabs = activityTabDefs.map(a => ({
+      label: a.label, go: () => this.setState({ activityTab: a.id }),
+      border: s.activityTab === a.id ? t.blueDeep : t.border, bg: s.activityTab === a.id ? t.surfaceLavender : 'transparent', color: s.activityTab === a.id ? t.blueDeep : t.textSecondary,
+    }));
+    const activityData = {
+      proximos: [{ title: 'Limpieza semanal', status: 'confirmada', detail: 'Martes 09:00–12:00 · ' + s.comuna, go: nav.C12, repeat: nav.HOME }],
+      curso: [{ title: 'Gasfitería · Filtración', status: 'en_ejecucion', detail: 'Hoy 16:00–18:00', go: nav.C13, repeat: nav.HOME }],
+      cierre: [{ title: 'Limpieza puntual', status: 'pendiente_cierre', detail: 'Ayer 10:00–13:00', go: nav.C15, repeat: nav.HOME }],
+      completados: [{ title: 'Cerrajería · Cambio de cerradura', status: 'completada', detail: 'Hace 3 días', go: nav.C16, repeat: nav.HOME }],
+      cancelados: [], disputa: [],
+    };
+    const statusColors = { confirmada: t.blueDeep, en_ejecucion: t.coral, pendiente_cierre: t.warning, completada: t.success };
+    const currentItems = activityData[s.activityTab] || [];
+    const activityItems = currentItems.map(it => ({ ...it, stColor: statusColors[it.status] || t.textSecondary }));
+
+    const weekDayDefs = ['L','M','M','J','V','S','D'];
+    const weekDays = weekDayDefs.map((label, i) => ({ label, bg: i < 5 ? t.surfaceLavender : t.bg, color: i < 5 ? t.blueDeep : t.textSecondary }));
+
+    // P03 servicios multi-select
+    const p03Defs = [
+      { id: 'limpieza', name: 'Limpieza del hogar', desc: 'Cobertura: Ñuñoa, Providencia · Modalidad: agendado' },
+      { id: 'gasfiteria', name: 'Gasfitería', desc: 'Cobertura: Ñuñoa · Modalidad: agendado' },
+      { id: 'cerrajeria', name: 'Cerrajería', desc: 'Cobertura: Ñuñoa · Modalidad: agendado' },
+    ];
+    const p03Services = p03Defs.map(sv => {
+      const active = s.p03Selected.includes(sv.id);
+      return {
+        ...sv, toggle: () => this.setState(x => ({ p03Selected: x.p03Selected.includes(sv.id) ? x.p03Selected.filter(id => id !== sv.id) : [...x.p03Selected, sv.id], p03Warning: false, p03Success: false })),
+        border: active ? t.blueDeep : t.border, bg: active ? t.surfaceLavender : 'transparent', titleColor: active ? t.blueDeep : t.text,
+      };
+    });
+    const p03BtnOpacity = 1;
+    const goP04 = () => { if (s.p03Selected.length === 0) { this.setState({ p03Warning: true, p03Success: false }); return; } this.setState({ p03Success: true }); setTimeout(() => this.setState({ screen: 'P04', p03Success: false }), 500); };
+
+    // P04 bloques horarios
+    const p04Day = s.p04ActiveDay;
+    const dayBlocksRaw = (s.p04BlocksByDay[p04Day] || []).slice().sort((a, b) => a.sh * 60 + a.sm - (b.sh * 60 + b.sm));
+    const fmt2 = (n) => String(n).padStart(2, '0');
+    const p04Blocks = dayBlocksRaw.map(b => ({ id: b.id, label: `${fmt2(b.sh)}:${fmt2(b.sm)} – ${fmt2(b.eh)}:${fmt2(b.em)}`, edit: () => this.openBlockEditor(b) }));
+    const p04HasBlocks = p04Blocks.length > 0;
+
+    const bStartMin = s.blkStartH * 60 + s.blkStartM, bEndMin = s.blkEndH * 60 + s.blkEndM;
+    const blockSaveLabel = s.blockEditingId ? 'Guardar cambios' : 'Agregar bloque';
+    const blockModalTitle = s.blockEditingId ? 'Editar bloque horario' : 'Agregar bloque horario';
+
+    const providerTabs = [
+      { id: 'P05', label: 'Inicio', icon: '⌂', go: nav.P05 },
+      { id: 'P06', label: 'Solicitudes', icon: '▤', go: nav.P06 },
+      { id: 'P08', label: 'Agenda', icon: '▦', go: nav.P08 },
+      { id: 'P11', label: 'Ganancias', icon: '$', go: nav.P11 },
+      { id: 'P12', label: 'Perfil', icon: '☺', go: nav.P12 },
+    ].map(x => ({ ...x, color: is[x.id] ? t.coral : t.textSecondary, weight: 600 }));
+
+    const providerProfileRows = [
+      { label: 'Servicios ofrecidos', value: 'Limpieza, Gasfitería', go: nav.P03 },
+      { label: 'Cobertura', value: 'Ñuñoa, Providencia', go: nav.P03 },
+      { label: 'Disponibilidad', value: 'Configurar', go: nav.P04 },
+      { label: 'Verificación', value: '2/3 capas', go: nav.P02 },
+      { label: 'Documentos', value: 'Privados', go: nav.P02 },
+      { label: 'Seguridad', value: '', go: nav.P12 },
+      { label: 'Privacidad', value: '', go: nav.P12 },
+      { label: 'Ayuda', value: '', go: nav.P12 },
+      { label: 'Notificaciones', value: 'Activas', go: nav.P12 },
+    ];
+
+    const p9 = s.providerStep;
+    const p9Style = (stepNum) => {
+      const active = p9 === stepNum - 1;
+      const done = p9 >= stepNum;
+      const enabled = p9 === stepNum - 1;
+      return {
+        bg: done ? t.success : (enabled ? t.coral : t.border),
+        color: (done || enabled) ? '#FFFFFF' : t.textSecondary,
+        cursor: enabled ? 'pointer' : 'not-allowed',
+        disabled: !enabled,
+      };
+    };
+    const p9s1 = p9Style(1), p9s2 = p9Style(2), p9s3 = p9Style(3), p9s4 = p9Style(4);
+
+    return {
+      t, is, nav, screenMap, comunas, proximamente, clientTabs, profileRows,
+      isHoy: modalidad === 'hoy', isProgramar: modalidad === 'programar',
+      setHoy: () => this.setState({ modalidad: 'hoy' }), setProgramar: () => this.setState({ modalidad: 'programar' }),
+      hoyBorder: modalidad === 'hoy' ? t.blueDeep : t.border, hoyBg: modalidad === 'hoy' ? t.surfaceLavender : 'transparent', hoyColor: modalidad === 'hoy' ? t.blueDeep : t.textSecondary,
+      progBorder: modalidad === 'programar' ? t.blueDeep : t.border, progBg: modalidad === 'programar' ? t.surfaceLavender : 'transparent', progColor: modalidad === 'programar' ? t.blueDeep : t.textSecondary,
+      mascotas, addMascota,
+      dayWheel, dayPrev, dayNext,
+      dayPrevDisabled: prevDayNum == null, dayPrevCursor: prevDayNum == null ? 'not-allowed' : 'pointer', dayPrevOpacity: prevDayNum == null ? 0.3 : 1,
+      dayNextDisabled: nextDayNum == null, dayNextCursor: nextDayNum == null ? 'not-allowed' : 'pointer', dayNextOpacity: nextDayNum == null ? 0.3 : 1,
+      hh, mm, hourUp, hourDown, minUp, minDown, homeAddress, serviceLabelC05,
+      extraDates, addExtraDate, scheduleSub, scheduleLines, continueLabel,
+      scanIdle: s.verifyStage === 'idle', scanCapturing: s.verifyStage === 'capturing', scanProcessing: s.verifyStage === 'processing',
+      scanIllegible: s.verifyStage === 'illegible', scanRejected: s.verifyStage === 'rejected', scanVerified: s.verifyStage === 'verified',
+      startScan: () => { this.setState({ verifyStage: 'capturing' }); setTimeout(() => this.setState({ verifyStage: 'processing' }), 700); setTimeout(() => this.setState({ verifyStage: 'verified' }), 1400); },
+      simIllegible: () => this.setState({ verifyStage: 'illegible' }), simRejected: () => this.setState({ verifyStage: 'rejected' }),
+      cverVerified: s.cverState !== 'rejected', cverRejected: s.cverState === 'rejected',
+      toggleCver: () => this.setState(x => ({ cverState: x.cverState === 'rejected' ? 'verified' : 'rejected' })),
+      goRequestForm: () => this.setState({ screen: s.service === 'gasfiteria' ? 'C06G' : s.service === 'cerrajeria' ? 'C06C' : 'C06L' }),
+      setEmerGas: () => this.setState({ emergencyType: 'gasfiteria' }), setEmerCerraj: () => this.setState({ emergencyType: 'cerrajeria' }),
+      emerGasBorder: s.emergencyType !== 'cerrajeria' ? t.error : t.border, emerGasBg: s.emergencyType !== 'cerrajeria' ? '#FDE8E3' : 'transparent', emerGasColor: s.emergencyType !== 'cerrajeria' ? t.error : t.textSecondary,
+      emerCerrajBorder: s.emergencyType === 'cerrajeria' ? t.error : t.border, emerCerrajBg: s.emergencyType === 'cerrajeria' ? '#FDE8E3' : 'transparent', emerCerrajColor: s.emergencyType === 'cerrajeria' ? t.error : t.textSecondary,
+      emergencyLabel: s.emergencyType === 'cerrajeria' ? 'Cerrajería' : 'Gasfitería',
+      serviceLabel,
+      c10aIdle: s.paymentStatus !== 'processing', c10aProcessing: s.paymentStatus === 'processing',
+      startPayment: () => { this.setState({ paymentStatus: 'processing' }); setTimeout(() => this.setState({ paymentStatus: 'idle', screen: 'C11' }), 1200); },
+      simulatePayError: () => { this.setState({ paymentStatus: 'processing' }); setTimeout(() => this.setState({ paymentStatus: 'idle', screen: 'C11E' }), 1000); },
+      retryPayment: () => this.setState({ screen: 'C10A' }),
+      closeNotDone: !s.closeConfirmed, closeDone: !!s.closeConfirmed, confirmClose: () => this.setState({ closeConfirmed: true }),
+      clientPhoto: s.clientPhoto, clientPhotoUpload: () => this.setState({ clientPhoto: true }),
+      clientPhotoLabel: s.clientPhoto ? '✓ Fotografía registrada.' : 'Tomar o subir fotografía',
+      clientPhotoBorder: s.clientPhoto ? t.success : t.border, clientPhotoColor: s.clientPhoto ? t.success : t.textSecondary,
+      activityTabs, activityHasItems: activityItems.length > 0, activityEmpty: activityItems.length === 0, activityItems,
+      weekDays, providerTabs, providerProfileRows,
+      p03Services, p03Warning: s.p03Warning, p03Success: s.p03Success, p03BtnOpacity, goP04,
+      p04Blocks, p04HasBlocks, p04NoBlocks: !p04HasBlocks,
+      openAddBlock: () => this.setState({ blockModalOpen: true, blockEditingId: null, blkStartH: 9, blkStartM: 0, blkEndH: 10, blkEndM: 0, blockError: '' }),
+      closeBlockModal: () => this.setState({ blockModalOpen: false, blockError: '' }),
+      blockModalOpen: s.blockModalOpen, blockModalTitle, blockSaveLabel,
+      blockEditingExisting: !!s.blockEditingId, blockError: s.blockError,
+      blkStartH: fmt2(s.blkStartH), blkStartM: fmt2(s.blkStartM), blkEndH: fmt2(s.blkEndH), blkEndM: fmt2(s.blkEndM),
+      blkStartHUp: () => this.setState(x => ({ blkStartH: (x.blkStartH + 1) % 24 })),
+      blkStartHDown: () => this.setState(x => ({ blkStartH: (x.blkStartH + 23) % 24 })),
+      blkStartMUp: () => this.setState(x => ({ blkStartM: (x.blkStartM + 5) % 60 })),
+      blkStartMDown: () => this.setState(x => ({ blkStartM: (x.blkStartM + 55) % 60 })),
+      blkEndHUp: () => this.setState(x => ({ blkEndH: (x.blkEndH + 1) % 24 })),
+      blkEndHDown: () => this.setState(x => ({ blkEndH: (x.blkEndH + 23) % 24 })),
+      blkEndMUp: () => this.setState(x => ({ blkEndM: (x.blkEndM + 5) % 60 })),
+      blkEndMDown: () => this.setState(x => ({ blkEndM: (x.blkEndM + 55) % 60 })),
+      saveBlock: () => {
+        if (bEndMin <= bStartMin) { this.setState({ blockError: 'La hora de término debe ser posterior a la hora de inicio.' }); return; }
+        const others = dayBlocksRaw.filter(b => b.id !== s.blockEditingId);
+        const overlaps = others.some(b => { const os = b.sh * 60 + b.sm, oe = b.eh * 60 + b.em; return bStartMin < oe && os < bEndMin; });
+        if (overlaps) { this.setState({ blockError: 'Este bloque se superpone con otro horario configurado.' }); return; }
+        const newBlock = { id: s.blockEditingId || s.p04NextId, sh: s.blkStartH, sm: s.blkStartM, eh: s.blkEndH, em: s.blkEndM };
+        this.setState(x => {
+          const list = (x.p04BlocksByDay[p04Day] || []).filter(b => b.id !== x.blockEditingId);
+          return {
+            p04BlocksByDay: { ...x.p04BlocksByDay, [p04Day]: [...list, newBlock] },
+            p04NextId: x.blockEditingId ? x.p04NextId : x.p04NextId + 1,
+            blockModalOpen: false, blockError: '',
+            p04Toast: x.blockEditingId ? 'Bloque horario actualizado.' : 'Bloque horario agregado.',
+          };
+        });
+        setTimeout(() => this.setState({ p04Toast: '' }), 2500);
+      },
+      openDeleteBlockConfirm: () => this.setState({ deleteBlockModalOpen: true }),
+      closeDeleteBlockConfirm: () => this.setState({ deleteBlockModalOpen: false }),
+      deleteBlockModalOpen: s.deleteBlockModalOpen,
+      confirmDeleteBlock: () => {
+        this.setState(x => ({
+          p04BlocksByDay: { ...x.p04BlocksByDay, [p04Day]: (x.p04BlocksByDay[p04Day] || []).filter(b => b.id !== x.blockEditingId) },
+          deleteBlockModalOpen: false, blockModalOpen: false, p04Toast: 'Bloque horario eliminado.',
+        }));
+        setTimeout(() => this.setState({ p04Toast: '' }), 2500);
+      },
+      p04Toast: s.p04Toast,
+      p04SaveToast: s.p04SaveToast,
+      saveAvailability: () => { this.setState({ p04SaveToast: true }); setTimeout(() => this.setState({ screen: 'P05', p04SaveToast: false }), 900); },
+      p09Bg1: p9s1.bg, p09Color1: p9s1.color, p09Cursor1: p9s1.cursor, p09Disabled1: p9s1.disabled,
+      p09Bg2: p9s2.bg, p09Color2: p9s2.color, p09Cursor2: p9s2.cursor, p09Disabled2: p9s2.disabled,
+      p09Bg3: p9s3.bg, p09Color3: p9s3.color, p09Cursor3: p9s3.cursor, p09Disabled3: p9s3.disabled,
+      p09Bg4: p9s4.bg, p09Color4: p9s4.color, p09Cursor4: p9s4.cursor, p09Disabled4: p9s4.disabled,
+      p09Step1: () => { if (p9 === 0) this.setState({ providerStep: 1 }); },
+      p09Step2: () => { if (p9 === 1) this.setState({ providerStep: 2 }); },
+      p09Step3: () => { if (p9 === 2) this.setState({ providerStep: 3 }); },
+      goP09: () => this.setState({ screen: 'P09', providerStep: 0 }),
+      goP09A: () => this.setState({ screen: 'P09A' }),
+      initialPhoto: s.initialPhoto, initialPhotoWarning: s.initialPhotoWarn,
+      initialPhotoUpload: () => this.setState({ initialPhoto: true, initialPhotoWarn: false }),
+      initialPhotoLabel: s.initialPhoto ? '✓ Fotografía registrada correctamente.' : 'Tomar o subir fotografía',
+      initialPhotoBorder: s.initialPhoto ? t.success : t.border, initialPhotoColor: s.initialPhoto ? t.success : t.textSecondary,
+      serviceStartedToast: s.serviceStartedToast,
+      startServiceDisabled: !s.initialPhoto, startServiceOpacity: s.initialPhoto ? 1 : 0.5,
+      startService: () => { if (!s.initialPhoto) { this.setState({ initialPhotoWarn: true }); return; } this.setState({ serviceStartedToast: true }); },
+      p10NotSent: (s.evidenceStatus || 'idle') === 'idle', p10Sent: s.evidenceStatus === 'sent', p10Paid: s.evidenceStatus === 'paid',
+      finalPhoto: s.finalPhoto, finalPhotoUpload: () => this.setState({ finalPhoto: true }),
+      finalPhotoLabel: s.finalPhoto ? '✓ Fotografía de término registrada.' : 'Tomar o subir fotografía',
+      finalPhotoBorder: s.finalPhoto ? t.success : t.border, finalPhotoColor: s.finalPhoto ? t.success : t.textSecondary,
+      sendEvidenceDisabled: !s.finalPhoto, sendEvidenceOpacity: s.finalPhoto ? 1 : 0.5,
+      sendEvidence: () => { if (s.finalPhoto) this.setState({ evidenceStatus: 'sent' }); },
+      confirmPaidOut: () => this.setState({ evidenceStatus: 'paid' }),
+      comuna: s.comuna,
+      comunaCovered: !!comunaCoveredNow, comunaNotCovered: !comunaCoveredNow,
+      mapOpen: s.mapOpen, mapOpenFalse: !s.mapOpen, sidebarWidth: s.mapOpen ? '260px' : '56px',
+      toggleMap: () => this.setState(x => ({ mapOpen: !x.mapOpen })),
+      setRoleCliente: () => this.setState({ role: 'cliente', screen: 'HOME' }),
+      setRolePrestador: () => this.setState({ role: 'prestador', screen: 'P05' }),
+      roleClienteBg: s.role === 'cliente' ? t.surface : 'transparent', roleClienteColor: s.role === 'cliente' ? t.blueDeep : t.textSecondary,
+      rolePrestadorBg: s.role === 'prestador' ? t.surface : 'transparent', rolePrestadorColor: s.role === 'prestador' ? t.blueDeep : t.textSecondary,
+      toggleTheme: () => this.setState(x => ({ theme: x.theme === 'light' ? 'dark' : 'light' })),
+      themeLabel: s.theme === 'dark' ? 'Oscuro' : 'Claro', themeIcon: s.theme === 'dark' ? '☾' : '☀',
+      toggleOffline: () => this.setState(x => ({ offlineDemo: !x.offlineDemo })),
+      offlineDemo: s.offlineDemo,
+      offlineLabel: s.offlineDemo ? 'Sin conexión ⚠' : 'Conectado',
+      offlineBg: s.offlineDemo ? '#FDE8E3' : t.surface, offlineBorder: s.offlineDemo ? t.error : t.border, offlineColor: s.offlineDemo ? t.error : t.text,
+      passwordType: s.showPassword ? 'text' : 'password', passwordToggleLabel: s.showPassword ? 'Ocultar' : 'Mostrar',
+      togglePassword: () => this.setState(x => ({ showPassword: !x.showPassword })),
+      navA04Click: () => this.go('A04'),
+      interestNote: s.interestNote, dismissInterest: () => this.setState({ interestNote: null }),
+      chooseLimpieza: () => this.setState({ service: 'limpieza', screen: 'C05' }),
+      chooseGasfiteria: () => this.setState({ service: 'gasfiteria', screen: 'C06G' }),
+      chooseCerrajeria: () => this.setState({ service: 'cerrajeria', screen: 'C06C' }),
+      c05Back: () => this.setState({ screen: s.service === 'gasfiteria' ? 'C06G' : s.service === 'cerrajeria' ? 'C06C' : 'HOME' }),
+      photoGas: s.photoGas, photoGasUpload: () => this.setState({ photoGas: true, photoGasWarn: false }),
+      photoGasLabel: s.photoGas ? '✓ Fotografía agregada' : 'Agregar fotografía del problema · Obligatoria',
+      photoGasBorder: s.photoGas ? t.success : t.border, photoGasColor: s.photoGas ? t.success : t.textSecondary,
+      photoGasMissingWarning: s.photoGasWarn,
+      goC05Gas: () => { if (!s.photoGas) { this.setState({ photoGasWarn: true }); return; } this.setState({ screen: 'C05' }); },
+      photoCerr: s.photoCerr, photoCerrUpload: () => this.setState({ photoCerr: true, photoCerrWarn: false }),
+      photoCerrLabel: s.photoCerr ? '✓ Fotografía agregada' : 'Agregar fotografía del problema · Obligatoria',
+      photoCerrBorder: s.photoCerr ? t.success : t.border, photoCerrColor: s.photoCerr ? t.success : t.textSecondary,
+      photoCerrMissingWarning: s.photoCerrWarn,
+      goC05Cerr: () => { if (!s.photoCerr) { this.setState({ photoCerrWarn: true }); return; } this.setState({ screen: 'C05' }); },
+      goC09: () => this.setState({ screen: 'C09', c09State: 'idle' }),
+      goC08NoProviders: () => this.setState({ screen: 'C08' }),
+      c09Idle: s.c09State !== 'cancelled', c09Cancelled: s.c09State === 'cancelled', c09Day: 'martes 11',
+      goC10: () => this.setState({ screen: 'C10' }),
+      openCancelModal: () => this.setState({ cancelModalOpen: true, cancelReason: null, cancelOtherText: '' }),
+      closeCancelModal: () => this.setState({ cancelModalOpen: false }),
+      cancelModalOpen: s.cancelModalOpen, cancelReasons, cancelReasonOther, cancelOtherText: s.cancelOtherText,
+      setCancelOtherText: (e) => this.setState({ cancelOtherText: e.target.value }),
+      cancelConfirmDisabled, cancelConfirmOpacity: cancelConfirmDisabled ? 0.5 : 1,
+      confirmCancel: () => this.setState({ cancelModalOpen: false, c09State: 'cancelled' }),
+      quoteInput: s.quoteInput, setQuoteInput: (e) => this.setState({ quoteInput: e.target.value }),
+      quoteInvalid, quoteBtnOpacity: quoteInvalid ? 0.5 : 1,
+      sendQuote: () => { if (!quoteInvalid) this.setState({ quoteSentToast: true }); },
+      quoteSentToast: s.quoteSentToast,
+      quotedPrice: s.quoteInput ? `$${quoteNum.toLocaleString('es-CL')}` : '$35.000',
+      acceptedToast: s.acceptedToast,
+      acceptOfferer: () => { this.setState({ acceptedToast: true }); setTimeout(() => this.setState({ screen: 'C10A', acceptedToast: false }), 900); },
+      buscarOtroModalOpen: s.buscarOtroModalOpen,
+      openBuscarOtroModal: () => this.setState({ buscarOtroModalOpen: true }),
+      closeBuscarOtroModal: () => this.setState({ buscarOtroModalOpen: false }),
+      confirmBuscarOtro: () => this.setState({ buscarOtroModalOpen: false, screen: 'C07' }),
+      anularModalOpen: s.anularModalOpen, anularReasons, anularReasonOther, anularOtherText: s.anularOtherText,
+      setAnularOtherText: (e) => this.setState({ anularOtherText: e.target.value }),
+      anularConfirmDisabled, anularConfirmOpacity: anularConfirmDisabled ? 0.5 : 1,
+      openAnularModal: () => this.setState({ anularModalOpen: true, anularReason: null, anularOtherText: '' }),
+      closeAnularModal: () => this.setState({ anularModalOpen: false }),
+      confirmAnular: () => this.setState({ anularModalOpen: false, anularToast: true }),
+      anularToast: s.anularToast,
+      setTelA: () => this.setState({ telVariant: 'A' }), setTelB: () => this.setState({ telVariant: 'B' }),
+      isTelA: s.telVariant === 'A', isTelB: s.telVariant === 'B',
+      telABg: s.telVariant === 'A' ? t.surface : 'transparent', telAColor: s.telVariant === 'A' ? t.blueDeep : t.textSecondary,
+      telBBg: s.telVariant === 'B' ? t.surface : 'transparent', telBColor: s.telVariant === 'B' ? t.blueDeep : t.textSecondary,
+      locationDenied: s.locationDenied, locationNotDenied: !s.locationDenied,
+      denyLocation: () => this.setState({ locationDenied: true }),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
